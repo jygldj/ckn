@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>三省轩主文集</title>
+    <title>三省轩主文集 </title>
     <style>
         /* 全局样式 */
         body {
@@ -24,6 +24,7 @@
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
             position: fixed;
+            transition: all 0.3s;
         }
         
         .sidebar h2 {
@@ -56,7 +57,7 @@
         }
         
         .article-list li a:hover,
-        .article-list li a.active    {
+        .article-list li a.active  {
             background: #cdaa7d;
             color: white;
         }
@@ -126,61 +127,12 @@
         .search-bar button:hover {
             background: #5a3921;
         }
- 
-        /* 新增导航栏样式（搜索框下方） */
-        .page-nav {
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .page-nav a {
-            color: #5a3921;
-            text-decoration: none;
-            padding: 8px 15px;
-            border: 1px solid #cdaa7d;
-            border-radius: 4px;
-            transition: all 0.3s;
-            font-family: "楷体", serif;
-        }
-        
-        .page-nav a:hover, 
-        .page-nav a.active   {
-            background: #8b4513;
-            color: white;
-            border-color: #5a3921;
-        }
-        
-        /* 文章导航 */
-        .article-nav {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-            padding: 15px 0;
-            border-top: 1px dashed #cdaa7d;
-            border-bottom: 1px dashed #cdaa7d;
-        }
-        
-        .article-nav a {
-            color: #8b4513;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 3px;
-            transition: all 0.3s;
-        }
-        
-        .article-nav a:hover {
-            background: #f0e6d2;
-            text-decoration: underline;
-        }
         
         /* 文章内容 */
         .article-content {
             line-height: 1.8;
             font-size: 18px;
+            padding-bottom: 80px; /* 为悬浮按钮留出空间 */
         }
         
         .article-title {
@@ -224,6 +176,64 @@
             font-size: 1.2em;
         }
         
+        /* 悬浮导航按钮 */
+        .article-float-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background: rgba(248, 244, 233, 0.9);
+            border-top: 1px dashed #cdaa7d;
+            z-index: 90;
+            display: none;
+        }
+        
+        .article-float-nav a {
+            color: #8b4513;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: #f0e6d2;
+            transition: all 0.3s;
+        }
+        
+        .article-float-nav a:hover {
+            background: #cdaa7d;
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* 页面导航样式 */
+        .page-navigation {
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            background: #f0e6d2;
+            border-radius: 5px;
+        }
+        
+        .page-link {
+            margin: 0 10px;
+            padding: 5px 10px;
+            color: #5a3921;
+            text-decoration: none;
+            border-radius: 3px;
+            transition: background 0.3s;
+        }
+        
+        .page-link:hover {
+            background: #cdaa7d;
+            color: white;
+        }
+        
+        .page-link.active {
+            background: #8b4513;
+            color: white;
+        }
+        
         /* 移动端适配 */
         @media screen and (max-width: 768px) {
             body {
@@ -232,12 +242,16 @@
             .sidebar {
                 width: 100%;
                 height: auto;
-                position: static;
-                padding: 15px;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                padding: 10px;
+                max-height: 50vh;
+                overflow-y: auto;
             }
             .content {
                 margin-left: 0;
-                padding: 20px;
+                padding: 15px;
             }
             .collection-header h1 {
                 font-size: 1.8em;
@@ -245,18 +259,58 @@
             .search-bar input {
                 width: 70%;
             }
-            .page-nav {
+            
+            /* 标签页导航样式 */
+            .tab-nav {
+                display: flex;
+                justify-content: space-around;
+                border-bottom: 2px solid #cdaa7d;
+                margin-bottom: 15px;
+            }
+            .tab-nav button {
+                flex: 1;
+                padding: 10px;
+                background: transparent;
+                border: none;
+                color: #5a3921;
+                cursor: pointer;
+                font-family: "楷体", serif;
+                transition: all 0.3s;
+            }
+            .tab-nav button.active {
+                color: #8b4513;
+                border-bottom: 2px solid #8b4513;
+            }
+            .tab-content {
+                display: none;
+            }
+            .tab-content.active {
+                display: block;
+            }
+            
+            /* 显示移动端悬浮导航 */
+            .article-float-nav {
+                display: flex;
+            }
+            
+            /* 移动端导航样式优化 */
+            .page-navigation {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
                 gap: 5px;
             }
-            .page-nav a {
-                padding: 6px 10px;
+            
+            .page-link {
+                margin: 0;
+                padding: 8px 12px;
                 font-size: 14px;
             }
         }
         
         /* 打印样式 */
         @media print {
-            .sidebar, .search-bar, .page-nav {
+            .sidebar, .search-bar {
                 display: none;
             }
             .content {
@@ -270,11 +324,11 @@
     <!-- 左侧目录 -->
     <aside class="sidebar">
         <div class="author-link">
-            <a href="cknjianjie.html"    style="display: block; text-align: center; padding: 10px; background: #8b4513; color: white; margin-bottom: 15px; border-radius: 5px;"> 
+            <a href="cknjianjie.html" style="display: block; text-align: center; padding: 10px; background: #8b4513; color: white; margin-bottom: 15px; border-radius: 5px;"> 
                 📝 关于作者版权 
             </a>
         </div>
-        <h2>📜 文章目录</h2>
+        
         <ul class="article-list" id="articleList">
             <!-- 动态生成目录 -->
         </ul>
@@ -284,44 +338,62 @@
     <main class="content" id="articleContent">
         <header class="collection-header">
             <h1 lang="zh">三省轩主文集</h1>
+            
+            <!-- 页面导航 -->
+            <nav class="page-navigation">
+                <a href="index.html" class="page-link">首页</a>
+                <a href="index2.html" class="page-link">第二页</a>
+                <a href="index3.html" class="page-link">第三页</a>
+            </nav>
+            
             <div role="search" class="search-bar">
                 <input type="search" id="searchInput" placeholder="输入关键词搜索..." aria-label="搜索文章">
                 <button onclick="searchArticles()">搜索</button>
             </div>
         </header>
         
-        <!-- 新增的导航栏（搜索框下方） -->
-        <nav class="page-nav">
-            <a href="index.html"   class="active">首页</a>
-            <a href="ckn2.html">  第二页</a>
-            <a href="ckn3.html">  第三页</a>
-            <a href="ckn4.html">  第四页</a>
-        </nav>
+        <div class="tab-nav" style="display: none;">
+            <button class="tab-btn active" onclick="switchTab('catalog')">目录</button>
+            <button class="tab-btn" onclick="switchTab('article')">文章</button>
+        </div>
         
-        <nav class="article-nav">
-            <a href="#" id="prevArticle">← 上一篇</a>
-            <a href="#" id="nextArticle">下一篇 →</a>
-        </nav>
+        <div class="tab-content active" id="catalogTab">
+            <!-- 目录内容已在侧边栏显示 -->
+        </div>
         
-        <article>
-            <h1 class="article-title" id="articleTitle">欢迎来到三省轩主文集</h1>
-            <div class="article-meta" id="articleMeta">
-                <span>请从左侧选择文章</span>
-            </div>
-            <div class="article-content" id="articleText">
-                <p>此处将显示您选择的文章内容...</p>
-            </div>
-        </article>
-        
-        <nav class="article-nav">
-            <a href="#" id="prevArticleBottom">← 上一篇</a>
-            <a href="#" id="nextArticleBottom">下一篇 →</a>
-        </nav>
+        <div class="tab-content" id="articleTab">
+            <nav class="article-nav" style="display: none;">
+                <a href="#" id="prevArticle">← 上一篇</a>
+                <a href="#" id="nextArticle">下一篇 →</a>
+            </nav>
+            
+            <article>
+                <h1 class="article-title" id="articleTitle">欢迎来到三省轩主文集</h1>
+                <div class="article-meta" id="articleMeta">
+                    <span>请从左侧选择文章</span>
+                </div>
+                <div class="article-content" id="articleText">
+                    <p>此处将显示您选择的文章内容...</p>
+                </div>
+            </article>
+            
+            <nav class="article-nav" style="display: none;">
+                <a href="#" id="prevArticleBottom">← 上一篇</a>
+                <a href="#" id="nextArticleBottom">下一篇 →</a>
+            </nav>
+        </div>
     </main>
+    
+    <!-- 悬浮导航 -->
+    <div class="article-float-nav">
+        <a href="#" id="mobilePrevArticle">← 上一篇</a>
+        <a href="#" id="mobileNextArticle">下一篇 →</a>
+    </div>
  
     <script>
-        // 修正后的文章数据 
+        // 文章数据 
         const articles = [
+
     {
         "id": 1,
         "title": "《初夏记事》",
@@ -419,14 +491,14 @@
         "title": "\u300a迎新春\u300b",
         "category": "诗",
         "date": "癸卯年除夕前夜",
-        "content": "<p>《 迎新春》二首</p><p>一·四海同庆</p><p>梅花弄影小巷中，<br>炮竹声喧大地红。<br>千家万户庆佳节，<br>四方亲友喜相逢。</p><p>神州图腾中国龙<br>华夏文化五州同。<br>闹春锣鼓辞旧岁，<br>踏歌起舞惊苍穹。</p><p>二·新春祝福</p><p>玉兔辞行龙腾飞，<br>甲辰新年迎春归。<br>吉祥如意送祝福，<br>合家团圆和气聚。</p><p>福寿安康常相随，<br>幸福美满喜乐汇。<br>一元复始呈瑞兆，<br>祝您万事遂心扉。</p><p>注：我在嘉峪关携全家借用拙诗《迎新春二首》给您和你全家人拜年。衷心祝福你在新的一年里阖家安康、幸福美满、万事顺意。</p>"
+        "content": "<p>《 迎新春》二首</p><p>一·四海同庆</p><p>梅花弄影小巷中，<br>炮竹声喧大地红。<br>千家万户庆佳节，<br>四方亲友喜相逢。</p><p>神州图腾中国龙<br>华夏文化五州同。<br>闹春锣鼓辞旧岁，<br>踏歌起舞惊苍穹。</p><p>二·新春祝福</p><p>玉兔辞行龙腾飞，<br>甲辰新年迎春归。<br>吉祥如意送祝福，<br>合家团圆和气聚。</p><p>福寿安康常相随，<br>幸福美满喜乐汇。<br>一元复始呈瑞兆，<br>祝您万事遂心扉。</p>"
     },
     {
         "id": 15,
         "title": "\u300a重阳感怀\u300b",
         "category": "诗",
         "date": "壬寅年重阳节日",
-        "content": "<p>《重阳感怀》</p><p>人生颠波多变化，<br>客居他乡少离家。<br>艰辛创业度春秋，<br>心想事成数冬夏。</p><p>故友千言话桑麻，<br>同人九日惜春华。<br>登高饮酒辞青去，<br>感念盛世享闲暇。</p>"
+        "content": "<p>《重阳感怀》</p><p>人生颠波多变化，<br>客居他乡少离家。<br>艰辛创业度春秋，<br>心想事成数冬夏。</p><p>故友千言话桑麻，<br>同人九日惜春华。<br>登高饮酒辞青去，<br>感念盛世享闲暇。</p><p>注：我在嘉峪关携全家借用<br>拙诗《迎新春二首》给<br>您和你全家人拜年衷心<br>祝福你在新的一年里阖<br>家安康、幸福美满、万<br>事顺意。</p>"
     },
     {
         "id": 16,
@@ -1026,6 +1098,7 @@
         "content": "<p>一、紧急集合</p><p>凌晨一声哨，<br>紧急集合号。<br>武器装备齐，<br>摸黑打背包。<br>穿衣和戴帽，<br>快速是目标。<br>悄然列队好，<br>时间九十秒。</p><p>二、站岗放哨</p><p>紧握手中槍，<br>军人当站岗。<br>敌情常了解，<br>宗旨记心上。<br>半夜起身忙，<br>放哨守安康。<br>口令须牢记，<br>警惕不能忘。</p><p>三、射击打靶</p><p>战士学打枪，<br>瞄准第一桩。<br>卧跪立姿全，<br>负重练臂膀。<br>森严射击场，<br>有序不慌张。<br>平静稳击发，<br>弹落靶中央。</p><p>四、投弹排雷</p><p>当兵基本功，<br>投弹算一宗。<br>挥臂用猛力，<br>迈腿手再松。<br>埋雷考实用，<br>排雷技术同。<br>胆大心要细，<br>人赞专又红。</p><p>五、孤胆训练</p><p>残月照松间，<br>深秋霜意寒。<br>山林寂无声，<br>一鸣惊悚惨。<br>戎装配指南，<br>夜训练孤胆。<br>峡谷独行客，<br>终成英雄汉。</p><p>六、擒拿格斗</p><p>擒拿格斗中，<br>行功快如风。<br>跌打摸滚爬，<br>勇猛赛大虫。<br>站立挺似松，<br>端坐稳如钟。<br>灵活出奇招，<br>不负有真功。</p><p>七、勇拼刺刀</p><p>刺杀要领多，<br>挡别压挑抽。<br>出手爆发力，<br>快速把腿收。<br>胸中燃怒火，<br>杀声震天吼。<br>面对假想敌，<br>刺进它心窝。</p><p>八、武装泅渡</p><p>江河海与湖，<br>武装能泅渡。<br>万米畅游行，<br>全凭真功夫。<br>征程无坦途，<br>思想不可疏。<br>战时用得上，<br>平时须吃苦。</p><p>九、野营拉练</p><p>千里徒步行，<br>驻扎知社情，<br>实战把兵练<br>侦察总在先。<br>宿营不扰民，<br>埋灶避炊烟。<br>昨夜人马在，<br>何时无踪影。</p><p>十、筑魂铸剑</p><p>军魂非平凡，<br>万锻铸一剑。<br>当兵磨意志，<br>何惧艰与难。<br>翻过四十年，<br>而今回首看。<br>人生无悔意，<br>当兵算一段。</p>"
     }
 
+
         ];
  
         // 当前文章索引 
@@ -1033,13 +1106,13 @@
         let searchTimer = null;
         
         // 初始化加载 
-        document.addEventListener('DOMContentLoaded',  function() {
+        document.addEventListener('DOMContentLoaded',  () => {
             // 预加载文章 
-            articles.forEach(function(article)  {
-                const link = document.createElement('link');   
+            articles.forEach(article  => {
+                const link = document.createElement('link'); 
                 link.rel  = 'prefetch';
-                link.href  = `#article=${article.id}`;   
-                document.head.appendChild(link);   
+                link.href  = `#article=${article.id}`; 
+                document.head.appendChild(link); 
             });
             
             renderArticleList();
@@ -1048,130 +1121,263 @@
             }
             
             // 搜索框防抖监听 
-            document.getElementById('searchInput').addEventListener('input',  function() {
+            document.getElementById('searchInput').addEventListener('input',  () => {
                 clearTimeout(searchTimer);
                 searchTimer = setTimeout(searchArticles, 300);
             });
             
-            // 键盘导航 
-            document.addEventListener('keydown',  function(e) {
-                if (e.key  === 'ArrowLeft' && currentArticleIndex > 0) {
-                    loadArticle(currentArticleIndex - 1);
-                } else if (e.key  === 'ArrowRight' && currentArticleIndex < articles.length  - 1) {
-                    loadArticle(currentArticleIndex + 1);
+            // 初始化折叠目录
+            initFoldableCatalog();
+            
+            // 初始化移动端标签页
+            initMobileTabs();
+            
+            // 添加滚动监听，滑动文章时自动收回目录
+            window.addEventListener('scroll', function() {
+                const isMobile = window.innerWidth <= 768;
+                const articleList = document.getElementById('articleList');
+                
+                if (isMobile && articleList.style.display === 'block') {
+                    articleList.style.display = 'none';
+                    document.getElementById('fold-icon').textContent = '▶';
+                }
+            });
+            
+            // 高亮当前页面导航链接
+            const currentPage = window.location.pathname.split('/').pop();
+            const pageLinks = document.querySelectorAll('.page-link');
+            
+            pageLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
                 }
             });
         });
         
+        // 初始化折叠目录
+        function initFoldableCatalog() {
+            const sidebar = document.querySelector('.sidebar');
+            const oldTitle = sidebar.querySelector('h2');
+            if (oldTitle) oldTitle.remove(); // 移除原有标题
+            
+            const catalogHeader = document.createElement('div');
+            catalogHeader.className = 'catalog-header';
+            catalogHeader.innerHTML = `
+                <h2 style="margin-top: 0; cursor: pointer;" onclick="toggleCatalog()">
+                    📜 文章目录 <span id="fold-icon">▼</span>
+                </h2>
+            `;
+            
+            const articleList = document.getElementById('articleList');
+            articleList.parentElement.insertBefore(catalogHeader, articleList);
+            
+            // 当文章数超过5篇时自动折叠
+            if (articles.length > 5) { 
+                articleList.style.display = 'none';
+                document.getElementById('fold-icon').textContent = '▶';
+            }
+        }
+        
+        // 切换目录折叠状态
+        function toggleCatalog() {
+            const articleList = document.getElementById('articleList');
+            const foldIcon = document.getElementById('fold-icon');
+            
+            if (articleList.style.display === 'none') {
+                articleList.style.display = 'block';
+                foldIcon.textContent = '▼';
+                
+                // 在移动端调整目录高度
+                if (window.innerWidth <= 768) {
+                    const sidebar = document.querySelector('.sidebar');
+                    sidebar.style.maxHeight = 'auto';
+                }
+            } else {
+                articleList.style.display = 'none';
+                foldIcon.textContent = '▶';
+                
+                // 在移动端调整目录高度
+                if (window.innerWidth <= 768) {
+                    const sidebar = document.querySelector('.sidebar');
+                    sidebar.style.maxHeight = '0';
+                }
+            }
+        }
+        
+        // 修改移动端标签页初始化函数
+        function initMobileTabs() {
+            const isMobile = window.innerWidth <= 768;
+            const tabNav = document.querySelector('.tab-nav');
+            const catalogTab = document.getElementById('catalogTab');
+            const articleTab = document.getElementById('articleTab');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (isMobile) {
+                tabNav.style.display = 'flex';
+                sidebar.style.display = 'block';
+                catalogTab.style.display = 'block';
+                
+                // 移动端目录点击事件
+                document.querySelectorAll('.article-list a').forEach(link => {
+                    link.onclick = function(e) {
+                        e.preventDefault();
+                        loadArticle(Array.from(document.querySelectorAll('.article-list a')).indexOf(this));
+                        switchTab('article');
+                    };
+                });
+                
+                // 确保目录折叠功能正常
+                const articleList = document.getElementById('articleList');
+                if (articles.length > 5) {
+                    articleList.style.display = 'none';
+                    document.getElementById('fold-icon').textContent = '▶';
+                } else {
+                    articleList.style.display = 'block';
+                    document.getElementById('fold-icon').textContent = '▼';
+                }
+            }
+        }
+        
+        // 切换标签页
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            
+            document.querySelector(`.tab-btn[onclick="switchTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(tabId + 'Tab').classList.add('active');
+            
+            // 滚动到文章内容区域
+            if (tabId === 'article') {
+                const articleContent = document.getElementById('articleContent');
+                articleContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        
         // 渲染目录 
         function renderArticleList() {
-            const listContainer = document.getElementById('articleList');    
-            listContainer.innerHTML  = articles.map(function(article)  {
-                return `
+            const listContainer = document.getElementById('articleList');  
+            listContainer.innerHTML  = articles.map(article  => `
                 <li>
-                    <a href="#" onclick="loadArticle(${articles.indexOf(article)})">    
-                        <span class="article-number">${article.id}.</span>    
-                        ${article.title}    
-                        <small>(${article.category})</small>    
+                    <a href="#" onclick="loadArticle(${articles.indexOf(article)})">  
+                        <span class="article-number">${article.id}.</span>  
+                        ${article.title}  
+                        <small>(${article.category})</small>  
                     </a>
                 </li>
-                `;
-            }).join('');
+            `).join('');
         }
         
         // 加载文章 
         function loadArticle(index) {
             document.getElementById('articleText').innerHTML  = '<div class="loading">🕯️ 文章加载中...</div>';
             
-            setTimeout(function() {
+            setTimeout(() => {
                 currentArticleIndex = index;
                 const article = articles[index];
                 
-                document.getElementById('articleTitle').textContent  = article.title;    
+                document.getElementById('articleTitle').textContent  = article.title;  
                 document.getElementById('articleMeta').innerHTML  = `
-                    <span>分类：${article.category}</span>    
-                    <span>日期：${article.date}</span>    
-                    <span>编号：${article.id}</span>    
+                    <span>分类：${article.category}</span>  
+                    <span>日期：${article.date}</span>  
+                    <span>编号：${article.id}</span>  
                 `;
-                document.getElementById('articleText').innerHTML  = article.content;    
+                document.getElementById('articleText').innerHTML  = article.content;  
                 
                 updateNavButtons();
-                window.scrollTo(0,  0);
                 
                 // 更新目录高亮 
-                document.querySelectorAll('.article-list  a').forEach(function(a, i) {
+                document.querySelectorAll('.article-list  a').forEach((a, i) => {
                     a.classList.toggle('active',  i === index);
                 });
+                
+                // 显示文章标签页（移动端）
+                if (window.innerWidth <= 768) {
+                    switchTab('article');
+                }
             }, 100);
         }
         
         // 更新导航按钮 
         function updateNavButtons() {
-            const prevButtons = document.querySelectorAll('#prevArticle,  #prevArticleBottom');
-            const nextButtons = document.querySelectorAll('#nextArticle,  #nextArticleBottom');
+            const prevButtons = document.querySelectorAll('#prevArticle,  #prevArticleBottom, #mobilePrevArticle');
+            const nextButtons = document.querySelectorAll('#nextArticle,  #nextArticleBottom, #mobileNextArticle');
             
             // 上一篇按钮 
-            prevButtons.forEach(function(btn)  {
+            prevButtons.forEach(btn  => {
                 if (currentArticleIndex > 0) {
                     btn.style.visibility  = 'visible';
-                    btn.onclick  = function(e) {
-                        e.preventDefault();    
+                    btn.onclick  = (e) => {
+                        e.preventDefault();  
                         loadArticle(currentArticleIndex - 1);
                     };
                 } else {
                     btn.style.visibility  = 'hidden';
+                    btn.onclick  = null;
                 }
             });
             
             // 下一篇按钮 
-            nextButtons.forEach(function(btn)  {
+            nextButtons.forEach(btn  => {
                 if (currentArticleIndex < articles.length  - 1) {
                     btn.style.visibility  = 'visible';
-                    btn.onclick  = function(e) {
-                        e.preventDefault();    
+                    btn.onclick  = (e) => {
+                        e.preventDefault();  
                         loadArticle(currentArticleIndex + 1);
                     };
                 } else {
                     btn.style.visibility  = 'hidden';
+                    btn.onclick  = null;
                 }
             });
         }
         
         // 搜索功能 
         function searchArticles() {
-            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();    
-            const filtered = articles.filter(function(article)  { 
-                return article.title.toLowerCase().includes(keyword)  || 
-                       article.content.toLowerCase().includes(keyword);    
-            });
+            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();  
+            const filtered = articles.filter(article  => 
+                article.title.toLowerCase().includes(keyword)  || 
+                article.content.toLowerCase().includes(keyword)  ||
+                article.category.toLowerCase().includes(keyword)
+            );
             
-            const listContainer = document.getElementById('articleList');    
-            listContainer.innerHTML  = filtered.map(function(article)  {
-                return `
+            const listContainer = document.getElementById('articleList');  
+            listContainer.innerHTML  = filtered.map(article  => `
                 <li>
-                    <a href="#" onclick="loadArticle(${articles.indexOf(article)})">    
-                        <span class="article-number">${article.id}.</span>    
+                    <a href="#" onclick="loadArticle(${articles.indexOf(article)})">  
+                        <span class="article-number">${article.id}.</span>  
                         ${highlightKeyword(article.title,  keyword)}
-                        <small>(${article.category})</small>    
+                        <small>(${article.category})</small>  
                     </a>
                 </li>
+            `).join('');
+            
+            // 如果搜索结果为空
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `
+                    <li style="text-align: center; padding: 15px; color: #8b4513;">
+                        未找到包含"${keyword}"的文章
+                    </li>
                 `;
-            }).join('');
+            }
         }
         
-        // 关键词高亮（安全版）
+        // 关键词高亮 
         function highlightKeyword(text, keyword) {
             if (!keyword) return text;
-            const div = document.createElement('div');   
-            div.textContent  = text;
-            const escapedText = div.innerHTML;   
-            return escapedText.replace(   
-                new RegExp(keyword.replace(/[.*+?^${}() |[\]\\]/g, '\\$&'), 'gi'), 
-                function(match) {
-                    return `<span class="highlight">${match}</span>`;
-                }
+            return text.replace(
+                new RegExp(`(${keyword})`, 'gi'),
+                '<span class="highlight">$1</span>'
             );
         }
+        
+        // 键盘导航 
+        document.addEventListener('keydown',  (e) => {
+            if (e.key  === 'ArrowLeft' && currentArticleIndex > 0) {
+                loadArticle(currentArticleIndex - 1);
+            } else if (e.key  === 'ArrowRight' && currentArticleIndex < articles.length  - 1) {
+                loadArticle(currentArticleIndex + 1);
+            }
+        });
     </script>
 </body>
 </html>
