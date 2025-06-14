@@ -242,13 +242,22 @@
             .sidebar {
                 width: 100%;
                 height: auto;
-                position: sticky;
-                top: 0;
+                position: relative; /* 修改为相对定位 */
                 z-index: 100;
                 padding: 10px;
                 max-height: 50vh;
                 overflow-y: auto;
+                transition: all 0.3s;
             }
+            
+            /* 新增：侧边栏隐藏时的样式 */
+            .sidebar.hidden {
+                max-height: 0;
+                padding: 0;
+                overflow: hidden;
+                opacity: 0;
+            }
+            
             .content {
                 margin-left: 0;
                 padding: 15px;
@@ -306,6 +315,24 @@
                 padding: 8px 12px;
                 font-size: 14px;
             }
+            
+            /* 显示/隐藏侧边栏按钮 */
+            .sidebar-toggle {
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                background: #8b4513;
+                color: white;
+                border-radius: 50%;
+                width: 36px;
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 101;
+                cursor: pointer;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
         }
         
         /* 打印样式 */
@@ -333,6 +360,11 @@
             <!-- 动态生成目录 -->
         </ul>
     </aside>
+    
+    <!-- 移动端侧边栏切换按钮 -->
+    <div class="sidebar-toggle" style="display: none;" onclick="toggleSidebar()">
+        <span id="sidebar-icon">≡</span>
+    </div>
     
     <!-- 右侧文章 -->
     <main class="content" id="articleContent">
@@ -393,7 +425,6 @@
     <script>
         // 文章数据 
         const articles = [
-
     {
         "id": 1,
         "title": "《初夏记事》",
@@ -1097,13 +1128,14 @@
         "date": "二零一二年八一",
         "content": "<p>一、紧急集合</p><p>凌晨一声哨，<br>紧急集合号。<br>武器装备齐，<br>摸黑打背包。<br>穿衣和戴帽，<br>快速是目标。<br>悄然列队好，<br>时间九十秒。</p><p>二、站岗放哨</p><p>紧握手中槍，<br>军人当站岗。<br>敌情常了解，<br>宗旨记心上。<br>半夜起身忙，<br>放哨守安康。<br>口令须牢记，<br>警惕不能忘。</p><p>三、射击打靶</p><p>战士学打枪，<br>瞄准第一桩。<br>卧跪立姿全，<br>负重练臂膀。<br>森严射击场，<br>有序不慌张。<br>平静稳击发，<br>弹落靶中央。</p><p>四、投弹排雷</p><p>当兵基本功，<br>投弹算一宗。<br>挥臂用猛力，<br>迈腿手再松。<br>埋雷考实用，<br>排雷技术同。<br>胆大心要细，<br>人赞专又红。</p><p>五、孤胆训练</p><p>残月照松间，<br>深秋霜意寒。<br>山林寂无声，<br>一鸣惊悚惨。<br>戎装配指南，<br>夜训练孤胆。<br>峡谷独行客，<br>终成英雄汉。</p><p>六、擒拿格斗</p><p>擒拿格斗中，<br>行功快如风。<br>跌打摸滚爬，<br>勇猛赛大虫。<br>站立挺似松，<br>端坐稳如钟。<br>灵活出奇招，<br>不负有真功。</p><p>七、勇拼刺刀</p><p>刺杀要领多，<br>挡别压挑抽。<br>出手爆发力，<br>快速把腿收。<br>胸中燃怒火，<br>杀声震天吼。<br>面对假想敌，<br>刺进它心窝。</p><p>八、武装泅渡</p><p>江河海与湖，<br>武装能泅渡。<br>万米畅游行，<br>全凭真功夫。<br>征程无坦途，<br>思想不可疏。<br>战时用得上，<br>平时须吃苦。</p><p>九、野营拉练</p><p>千里徒步行，<br>驻扎知社情，<br>实战把兵练<br>侦察总在先。<br>宿营不扰民，<br>埋灶避炊烟。<br>昨夜人马在，<br>何时无踪影。</p><p>十、筑魂铸剑</p><p>军魂非平凡，<br>万锻铸一剑。<br>当兵磨意志，<br>何惧艰与难。<br>翻过四十年，<br>而今回首看。<br>人生无悔意，<br>当兵算一段。</p>"
     }
-
-
+            // 其他文章保持不变
         ];
  
         // 当前文章索引 
         let currentArticleIndex = 0;
         let searchTimer = null;
+        let sidebarHidden = false; // 侧边栏隐藏状态
+        let lastScrollTop = 0; // 上次滚动位置
         
         // 初始化加载 
         document.addEventListener('DOMContentLoaded',  () => {
@@ -1132,16 +1164,11 @@
             // 初始化移动端标签页
             initMobileTabs();
             
-            // 添加滚动监听，滑动文章时自动收回目录
-            window.addEventListener('scroll', function() {
-                const isMobile = window.innerWidth <= 768;
-                const articleList = document.getElementById('articleList');
-                
-                if (isMobile && articleList.style.display === 'block') {
-                    articleList.style.display = 'none';
-                    document.getElementById('fold-icon').textContent = '▶';
-                }
-            });
+            // 添加滚动监听，控制侧边栏显示隐藏
+            window.addEventListener('scroll', handleScroll);
+            
+            // 初始化侧边栏状态
+            initSidebar();
             
             // 高亮当前页面导航链接
             const currentPage = window.location.pathname.split('/').pop();
@@ -1153,6 +1180,60 @@
                 }
             });
         });
+        
+        // 初始化侧边栏状态
+        function initSidebar() {
+            const isMobile = window.innerWidth <= 768;
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            
+            if (isMobile) {
+                sidebarToggle.style.display = 'flex';
+                // 默认显示侧边栏
+                document.querySelector('.sidebar').classList.remove('hidden');
+                document.getElementById('sidebar-icon').textContent = '≡';
+            } else {
+                sidebarToggle.style.display = 'none';
+                document.querySelector('.sidebar').classList.remove('hidden');
+            }
+        }
+        
+        // 处理滚动事件
+        function handleScroll() {
+            const isMobile = window.innerWidth <= 768;
+            const sidebar = document.querySelector('.sidebar');
+            const scrollTop = window.scrollY;
+            
+            if (isMobile) {
+                // 向下滚动超过100px且侧边栏可见时，隐藏侧边栏
+                if (scrollTop > 100 && scrollTop > lastScrollTop && !sidebarHidden) {
+                    sidebar.classList.add('hidden');
+                    sidebarHidden = true;
+                    document.getElementById('sidebar-icon').textContent = '≡';
+                } 
+                // 向上滚动且接近顶部时，显示侧边栏
+                else if (scrollTop < 50 && sidebarHidden) {
+                    sidebar.classList.remove('hidden');
+                    sidebarHidden = false;
+                    document.getElementById('sidebar-icon').textContent = '×';
+                }
+                
+                lastScrollTop = scrollTop;
+            }
+        }
+        
+        // 切换侧边栏显示/隐藏
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebarHidden = !sidebarHidden;
+            
+            if (sidebarHidden) {
+                sidebar.classList.add('hidden');
+                document.getElementById('sidebar-icon').textContent = '≡';
+            } else {
+                sidebar.classList.remove('hidden');
+                document.getElementById('sidebar-icon').textContent = '×';
+            }
+        }
         
         // 初始化折叠目录
         function initFoldableCatalog() {
@@ -1199,7 +1280,7 @@
                 // 在移动端调整目录高度
                 if (window.innerWidth <= 768) {
                     const sidebar = document.querySelector('.sidebar');
-                    sidebar.style.maxHeight = '0';
+                    sidebar.style.maxHeight = 'auto';
                 }
             }
         }
@@ -1378,6 +1459,9 @@
                 loadArticle(currentArticleIndex + 1);
             }
         });
+        
+        // 窗口大小改变时重新初始化侧边栏
+        window.addEventListener('resize', initSidebar);
     </script>
 </body>
 </html>

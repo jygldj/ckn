@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>三省轩主文集</title>
+    <title>三省轩主文集 </title>
     <style>
         /* 全局样式 */
         body {
@@ -242,13 +242,22 @@
             .sidebar {
                 width: 100%;
                 height: auto;
-                position: sticky;
-                top: 0;
+                position: relative; /* 修改为相对定位 */
                 z-index: 100;
                 padding: 10px;
                 max-height: 50vh;
                 overflow-y: auto;
+                transition: all 0.3s;
             }
+            
+            /* 新增：侧边栏隐藏时的样式 */
+            .sidebar.hidden {
+                max-height: 0;
+                padding: 0;
+                overflow: hidden;
+                opacity: 0;
+            }
+            
             .content {
                 margin-left: 0;
                 padding: 15px;
@@ -306,6 +315,24 @@
                 padding: 8px 12px;
                 font-size: 14px;
             }
+            
+            /* 显示/隐藏侧边栏按钮 */
+            .sidebar-toggle {
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                background: #8b4513;
+                color: white;
+                border-radius: 50%;
+                width: 36px;
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 101;
+                cursor: pointer;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
         }
         
         /* 打印样式 */
@@ -333,6 +360,11 @@
             <!-- 动态生成目录 -->
         </ul>
     </aside>
+    
+    <!-- 移动端侧边栏切换按钮 -->
+    <div class="sidebar-toggle" style="display: none;" onclick="toggleSidebar()">
+        <span id="sidebar-icon">≡</span>
+    </div>
     
     <!-- 右侧文章 -->
     <main class="content" id="articleContent">
@@ -393,7 +425,6 @@
     <script>
         // 文章数据 
         const articles = [
-
     {
         "id": 301,
         "title": "\u300a三教空无观\u300b",
@@ -408,11 +439,14 @@
         "date": "乙巳年五月十三",
         "content": "<p>格尽代码三千行·物我两忘见性光<br>四百文章未足道·中庸方是妙文章</p>"
     }
+            // 其他文章保持不变
         ];
  
         // 当前文章索引 
         let currentArticleIndex = 0;
         let searchTimer = null;
+        let sidebarHidden = false; // 侧边栏隐藏状态
+        let lastScrollTop = 0; // 上次滚动位置
         
         // 初始化加载 
         document.addEventListener('DOMContentLoaded',  () => {
@@ -441,16 +475,11 @@
             // 初始化移动端标签页
             initMobileTabs();
             
-            // 添加滚动监听，滑动文章时自动收回目录
-            window.addEventListener('scroll', function() {
-                const isMobile = window.innerWidth <= 768;
-                const articleList = document.getElementById('articleList');
-                
-                if (isMobile && articleList.style.display === 'block') {
-                    articleList.style.display = 'none';
-                    document.getElementById('fold-icon').textContent = '▶';
-                }
-            });
+            // 添加滚动监听，控制侧边栏显示隐藏
+            window.addEventListener('scroll', handleScroll);
+            
+            // 初始化侧边栏状态
+            initSidebar();
             
             // 高亮当前页面导航链接
             const currentPage = window.location.pathname.split('/').pop();
@@ -462,6 +491,60 @@
                 }
             });
         });
+        
+        // 初始化侧边栏状态
+        function initSidebar() {
+            const isMobile = window.innerWidth <= 768;
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            
+            if (isMobile) {
+                sidebarToggle.style.display = 'flex';
+                // 默认显示侧边栏
+                document.querySelector('.sidebar').classList.remove('hidden');
+                document.getElementById('sidebar-icon').textContent = '≡';
+            } else {
+                sidebarToggle.style.display = 'none';
+                document.querySelector('.sidebar').classList.remove('hidden');
+            }
+        }
+        
+        // 处理滚动事件
+        function handleScroll() {
+            const isMobile = window.innerWidth <= 768;
+            const sidebar = document.querySelector('.sidebar');
+            const scrollTop = window.scrollY;
+            
+            if (isMobile) {
+                // 向下滚动超过100px且侧边栏可见时，隐藏侧边栏
+                if (scrollTop > 100 && scrollTop > lastScrollTop && !sidebarHidden) {
+                    sidebar.classList.add('hidden');
+                    sidebarHidden = true;
+                    document.getElementById('sidebar-icon').textContent = '≡';
+                } 
+                // 向上滚动且接近顶部时，显示侧边栏
+                else if (scrollTop < 50 && sidebarHidden) {
+                    sidebar.classList.remove('hidden');
+                    sidebarHidden = false;
+                    document.getElementById('sidebar-icon').textContent = '×';
+                }
+                
+                lastScrollTop = scrollTop;
+            }
+        }
+        
+        // 切换侧边栏显示/隐藏
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebarHidden = !sidebarHidden;
+            
+            if (sidebarHidden) {
+                sidebar.classList.add('hidden');
+                document.getElementById('sidebar-icon').textContent = '≡';
+            } else {
+                sidebar.classList.remove('hidden');
+                document.getElementById('sidebar-icon').textContent = '×';
+            }
+        }
         
         // 初始化折叠目录
         function initFoldableCatalog() {
@@ -508,7 +591,7 @@
                 // 在移动端调整目录高度
                 if (window.innerWidth <= 768) {
                     const sidebar = document.querySelector('.sidebar');
-                    sidebar.style.maxHeight = '0';
+                    sidebar.style.maxHeight = 'auto';
                 }
             }
         }
@@ -687,6 +770,9 @@
                 loadArticle(currentArticleIndex + 1);
             }
         });
+        
+        // 窗口大小改变时重新初始化侧边栏
+        window.addEventListener('resize', initSidebar);
     </script>
 </body>
 </html>
