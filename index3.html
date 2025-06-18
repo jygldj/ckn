@@ -35,6 +35,31 @@
             margin-top: 0;
         }
         
+        /* 筛选控件样式 */
+        .filter-container {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .filter-select {
+            width: 300px; /* 与搜索框宽度一致 */
+            padding: 8px;
+            border: 1px solid #cdaa7d;
+            border-radius: 3px;
+            background: white;
+            font-family: "楷体", serif;
+            font-size: 16px;
+            cursor: pointer;
+            color: #5a3921;
+        }
+        
+        /* 占位文本样式 */
+        .filter-select:placeholder-shown {
+            color: #999;
+            font-style: italic;
+        }
+        
         .article-list {
             list-style: none;
             padding: 0;
@@ -166,6 +191,27 @@
             background-color: #ffe0b2;
             padding: 0 3px;
             border-radius: 3px;
+        }
+        
+        /* 段落缩进 */
+        .paragraph-indent {
+            text-indent: 2em;
+        }
+        
+        /* 诗和词格式样式 */
+        .poem {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .poem-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .poem-content {
+            white-space: pre-line;
+            line-height: 2;
         }
         
         /* 加载指示 */
@@ -333,6 +379,17 @@
                 cursor: pointer;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             }
+            
+            /* 移动端筛选控件样式调整 */
+            .filter-container {
+                margin: 10px 0;
+            }
+            
+            .filter-select {
+                width: 70%;
+                padding: 6px;
+                font-size: 14px;
+            }
         }
         
         /* 打印样式 */
@@ -354,6 +411,18 @@
             <a href="cknjianjie.html" style="display: block; text-align: center; padding: 10px; background: #8b4513; color: white; margin-bottom: 15px; border-radius: 5px;"> 
                 📝 关于作者版权 
             </a>
+        </div>
+        
+        <h2>文章目录</h2>
+        
+        <div class="filter-container">
+            <select class="filter-select" id="categoryFilter" onchange="filterArticles()">
+                <option value="" disabled selected>文章分类：全部</option>
+                <option value="all">全部</option>
+                <option value="诗">诗</option>
+                <option value="词">词</option>
+                <option value="其它">其它</option>
+            </select>
         </div>
         
         <ul class="article-list" id="articleList">
@@ -439,7 +508,6 @@
         "date": "乙巳年五月十三",
         "content": "<p>格尽代码三千行·物我两忘见性光<br>四百文章未足道·中庸方是妙文章</p>"
     }
-            // 其他文章保持不变
         ];
  
         // 当前文章索引 
@@ -447,6 +515,8 @@
         let searchTimer = null;
         let sidebarHidden = false; // 侧边栏隐藏状态
         let lastScrollTop = 0; // 上次滚动位置
+        let currentSearchKeyword = ''; // 当前搜索关键词
+        let activeFilter = 'all'; // 活跃的分类筛选
         
         // 初始化加载 
         document.addEventListener('DOMContentLoaded',  () => {
@@ -560,12 +630,12 @@
                 </h2>
             `;
             
-            const articleList = document.getElementById('articleList');
-            articleList.parentElement.insertBefore(catalogHeader, articleList);
+            const filterControls = document.querySelector('.filter-container');
+            sidebar.insertBefore(catalogHeader, filterControls);
             
             // 当文章数超过5篇时自动折叠
             if (articles.length > 5) { 
-                articleList.style.display = 'none';
+                document.getElementById('articleList').style.display = 'none';
                 document.getElementById('fold-icon').textContent = '▶';
             }
         }
@@ -645,27 +715,74 @@
             }
         }
         
+        // 应用筛选条件
+        function applyFilters() {
+            let filtered = [...articles];
+            
+            // 应用分类筛选
+            if (activeFilter === '其它') {
+                filtered = filtered.filter(article => article.category !== '诗' && article.category !== '词');
+            } else if (activeFilter !== 'all') {
+                filtered = filtered.filter(article => article.category === activeFilter);
+            }
+            
+            return filtered;
+        }
+        
+        // 筛选文章
+        function filterArticles() {
+            const selectedValue = document.getElementById('categoryFilter').value;
+            if (selectedValue) { // 确保不是占位选项
+                activeFilter = selectedValue;
+                renderArticleList();
+                
+                // 如果当前文章不在筛选结果中，加载筛选后的第一篇文章
+                const filteredArticles = applyFilters();
+                if (filteredArticles.length > 0 && !filteredArticles.includes(articles[currentArticleIndex])) {
+                    loadArticle(0);
+                }
+            }
+        }
+        
         // 渲染目录 
         function renderArticleList() {
+            const filteredArticles = applyFilters();
             const listContainer = document.getElementById('articleList');  
-            listContainer.innerHTML  = articles.map(article  => `
+            listContainer.innerHTML  = filteredArticles.map(article  => `
                 <li>
-                    <a href="#" onclick="loadArticle(${articles.indexOf(article)})">  
+                    <a href="#" onclick="loadArticle(${filteredArticles.indexOf(article)})">  
                         <span class="article-number">${article.id}.</span>  
                         ${article.title}  
                         <small>(${article.category})</small>  
                     </a>
                 </li>
             `).join('');
+            
+            // 如果筛选结果为空
+            if (filteredArticles.length === 0) {
+                listContainer.innerHTML = `
+                    <li style="text-align: center; padding: 15px; color: #8b4513;">
+                        没有找到符合条件的文章
+                    </li>
+                `;
+            }
         }
         
         // 加载文章 
         function loadArticle(index) {
+            const filteredArticles = applyFilters();
+            
+            // 如果没有筛选结果，不加载任何文章
+            if (filteredArticles.length === 0) return;
+            
+            // 确保索引在有效范围内
+            if (index < 0 || index >= filteredArticles.length) return;
+            
             document.getElementById('articleText').innerHTML  = '<div class="loading">🕯️ 文章加载中...</div>';
             
             setTimeout(() => {
-                currentArticleIndex = index;
-                const article = articles[index];
+                const article = filteredArticles[index];
+                currentArticleIndex = articles.indexOf(article); // 保存原始索引
                 
                 document.getElementById('articleTitle').textContent  = article.title;  
                 document.getElementById('articleMeta').innerHTML  = `
@@ -673,7 +790,21 @@
                     <span>日期：${article.date}</span>  
                     <span>编号：${article.id}</span>  
                 `;
-                document.getElementById('articleText').innerHTML  = article.content;  
+                
+                // 渲染文章内容并处理缩进
+                let content = article.content;
+                
+                // 处理段落缩进（非诗非词）
+                if (article.category !== '诗' && article.category !== '词') {
+                    content = content.replace(/<p>/g, '<p class="paragraph-indent">');
+                }
+                
+                // 应用关键词高亮
+                if (currentSearchKeyword) {
+                    content = highlightContent(content, currentSearchKeyword);
+                }
+                
+                document.getElementById('articleText').innerHTML  = content;  
                 
                 updateNavButtons();
                 
@@ -691,16 +822,19 @@
         
         // 更新导航按钮 
         function updateNavButtons() {
+            const filteredArticles = applyFilters();
+            const currentFilteredIndex = filteredArticles.indexOf(articles[currentArticleIndex]);
+            
             const prevButtons = document.querySelectorAll('#prevArticle,  #prevArticleBottom, #mobilePrevArticle');
             const nextButtons = document.querySelectorAll('#nextArticle,  #nextArticleBottom, #mobileNextArticle');
             
             // 上一篇按钮 
             prevButtons.forEach(btn  => {
-                if (currentArticleIndex > 0) {
+                if (currentFilteredIndex > 0) {
                     btn.style.visibility  = 'visible';
                     btn.onclick  = (e) => {
                         e.preventDefault();  
-                        loadArticle(currentArticleIndex - 1);
+                        loadArticle(currentFilteredIndex - 1);
                     };
                 } else {
                     btn.style.visibility  = 'hidden';
@@ -710,11 +844,11 @@
             
             // 下一篇按钮 
             nextButtons.forEach(btn  => {
-                if (currentArticleIndex < articles.length  - 1) {
+                if (currentFilteredIndex < filteredArticles.length  - 1) {
                     btn.style.visibility  = 'visible';
                     btn.onclick  = (e) => {
                         e.preventDefault();  
-                        loadArticle(currentArticleIndex + 1);
+                        loadArticle(currentFilteredIndex + 1);
                     };
                 } else {
                     btn.style.visibility  = 'hidden';
@@ -725,11 +859,11 @@
         
         // 搜索功能 
         function searchArticles() {
-            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();  
+            currentSearchKeyword = document.getElementById('searchInput').value.trim().toLowerCase();  
             const filtered = articles.filter(article  => 
-                article.title.toLowerCase().includes(keyword)  || 
-                article.content.toLowerCase().includes(keyword)  ||
-                article.category.toLowerCase().includes(keyword)
+                article.title.toLowerCase().includes(currentSearchKeyword)  || 
+                article.content.toLowerCase().includes(currentSearchKeyword)  ||
+                article.category.toLowerCase().includes(currentSearchKeyword)
             );
             
             const listContainer = document.getElementById('articleList');  
@@ -737,7 +871,7 @@
                 <li>
                     <a href="#" onclick="loadArticle(${articles.indexOf(article)})">  
                         <span class="article-number">${article.id}.</span>  
-                        ${highlightKeyword(article.title,  keyword)}
+                        ${highlightKeyword(article.title,  currentSearchKeyword)}
                         <small>(${article.category})</small>  
                     </a>
                 </li>
@@ -747,9 +881,14 @@
             if (filtered.length === 0) {
                 listContainer.innerHTML = `
                     <li style="text-align: center; padding: 15px; color: #8b4513;">
-                        未找到包含"${keyword}"的文章
+                        未找到包含"${currentSearchKeyword}"的文章
                     </li>
                 `;
+            }
+            
+            // 如果有搜索结果，加载第一篇
+            if (filtered.length > 0) {
+                loadArticle(articles.indexOf(filtered[0]));
             }
         }
         
@@ -762,12 +901,29 @@
             );
         }
         
+        // 文章内容关键词高亮
+        function highlightContent(html, keyword) {
+            if (!keyword) return html;
+            return html.replace(
+                new RegExp(`(${keyword})`, 'gi'),
+                '<span class="highlight">$1</span>'
+            );
+        }
+        
         // 键盘导航 
         document.addEventListener('keydown',  (e) => {
-            if (e.key  === 'ArrowLeft' && currentArticleIndex > 0) {
-                loadArticle(currentArticleIndex - 1);
-            } else if (e.key  === 'ArrowRight' && currentArticleIndex < articles.length  - 1) {
-                loadArticle(currentArticleIndex + 1);
+            if (e.key  === 'ArrowLeft') {
+                const filteredArticles = applyFilters();
+                const currentFilteredIndex = filteredArticles.indexOf(articles[currentArticleIndex]);
+                if (currentFilteredIndex > 0) {
+                    loadArticle(currentFilteredIndex - 1);
+                }
+            } else if (e.key  === 'ArrowRight') {
+                const filteredArticles = applyFilters();
+                const currentFilteredIndex = filteredArticles.indexOf(articles[currentArticleIndex]);
+                if (currentFilteredIndex < filteredArticles.length - 1) {
+                    loadArticle(currentFilteredIndex + 1);
+                }
             }
         });
         

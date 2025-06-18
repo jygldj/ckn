@@ -35,6 +35,31 @@
             margin-top: 0;
         }
         
+        /* 筛选控件样式 */
+        .filter-container {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .filter-select {
+            width: 300px; /* 与搜索框宽度一致 */
+            padding: 8px;
+            border: 1px solid #cdaa7d;
+            border-radius: 3px;
+            background: white;
+            font-family: "楷体", serif;
+            font-size: 16px;
+            cursor: pointer;
+            color: #5a3921;
+        }
+        
+        /* 占位文本样式 */
+        .filter-select:placeholder-shown {
+            color: #999;
+            font-style: italic;
+        }
+        
         .article-list {
             list-style: none;
             padding: 0;
@@ -166,6 +191,27 @@
             background-color: #ffe0b2;
             padding: 0 3px;
             border-radius: 3px;
+        }
+        
+        /* 段落缩进 */
+        .paragraph-indent {
+            text-indent: 2em;
+        }
+        
+        /* 诗和词格式样式 */
+        .poem {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .poem-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .poem-content {
+            white-space: pre-line;
+            line-height: 2;
         }
         
         /* 加载指示 */
@@ -333,6 +379,17 @@
                 cursor: pointer;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             }
+            
+            /* 移动端筛选控件样式调整 */
+            .filter-container {
+                margin: 10px 0;
+            }
+            
+            .filter-select {
+                width: 70%;
+                padding: 6px;
+                font-size: 14px;
+            }
         }
         
         /* 打印样式 */
@@ -354,6 +411,18 @@
             <a href="cknjianjie.html" style="display: block; text-align: center; padding: 10px; background: #8b4513; color: white; margin-bottom: 15px; border-radius: 5px;"> 
                 📝 关于作者版权 
             </a>
+        </div>
+        
+        <h2>文章目录</h2>
+        
+        <div class="filter-container">
+            <select class="filter-select" id="categoryFilter" onchange="filterArticles()">
+                <option value="" disabled selected>文章分类：全部</option>
+                <option value="all">全部</option>
+                <option value="诗">诗</option>
+                <option value="词">词</option>
+                <option value="其它">其它</option>
+            </select>
         </div>
         
         <ul class="article-list" id="articleList">
@@ -1057,7 +1126,6 @@
     "date": "2010年5月底",
     "content": "<p>经省局党组批准5月12日至16日由陈其寿副局长带队率8人考察团赴江苏省学习履行工商职能服务地方经济发展的先进经验。我“五、一”期间已先期回江苏探亲，12日下午乘动车组从无锡赴南京江苏省政府招待所西康宾馆集中报到，晚上江苏省局佘义和局长在西康宾馆设欢迎晚宴，金宝林副巡视员作陪。宴中，陈其寿付局长代张绪胜局长向佘局长表示问候并汇报了此次考察的意图并请求给予支持，江苏省局当即就做了周密的安排。</p><p>13日上午由南京玄武区工商局王志坚局长（其寿局长的好朋友）接待参观了其辖区内的爱国主义教育基地、中山陵和民国时期的总统府、历史上也曾是明清时期的江南巡抚府和太平天国时期的天王府，两个景点。并设午宴款待。下午江苏省局对应组织了个体处李晓东处长、孙原生付处长、注册局蒋常彦处长、食品安全监管处陈德美处长、公平交易执法局朱付局长、信息中心单荣主任、局办公室邵德冲付主任等处室领导在机关会议室进行了交流，介绍了他们服务地方经法发展的政策及措施。</p><p>江苏省现有人口7724万人，国土面积10.26万平方公里，占全国总面积的1.06％，2009年GDP达3.4万亿元，个体私营经济的贡献率为39.4％，全省人均达到6475美元，大口径财政收入8404亿元，地方一般性收入3228亿元。</p><p>截止今年3月底全省有各类市场主体377万户，列总数第一的广东省后，其中各类企业112万户，企业总数中含私企92万户，私企数量位列全国第一，农民专业合作社25800户位列全国第三，江苏省工商系统有干部职工22000余人，每年财政下拨的预算经费是26亿元，因南京市是计划单列市其干部职工人数及经费均不含在省局系统内。</p><p>据介绍2009年江苏省工商行政管理系统行政执法办案罚没款4.2亿元，比过去的6亿多元下降了30％，案件与罚没款的逐年下降，一是说明市场法人主体的法律意识在得到不断增强、能够进行守法经营，二是说明工商行政管理部门行政指导、提前警示等为市场主体的服务性措施得到了全面贯彻落实，我们了解到因此江苏省工商局的行政执法形象不仅在地方党委、政府而且在管理对象中也越来越好。行政性罚没款虽然与工商廉政形象没有直接的必然联系，但在经济不发达地区肯定会受到一定的影响。所以，对我省近两年行政执法办案数量和罚没款直线上升的趋势、要认真加以科学的分析、只有制定出适度的监管政策和服务措施，才能更有利于经济的发展和工商形象的改善。</p><p>今年，江苏省局为支持地方经济发展制定了26条政策他们对这些政策研究得很深很透、原则上只要不与法律法规相抵触就鼓励大家大胆去尝试，有些政策在全国工商系统都处于领先地位，既有前瞻性、又有可操作性，他们那种紧密联系实际、大胆解放思想、勇于探索创新、“敢为天下先”的精神很值得我们学习。晚上张振飞付局长在省局培训基地设招待晚宴。</p><p>14日上午早餐后由江苏省局个体处孙原生副处长陪同赴南通市考察，行程3个半小时。因南通市工商局蒋亚亭局长正在办移交手续准备赴无锡市履任新职，（原无锡市孙连才局长己提任省局副局长）文峰宾馆共进午饭后他委派李菊生副局长和个体科的朱建东科长随我们一起到海门县三星镇的家纺城市场进行学习考察。三星镇（叠石桥）是清代末科状元、我国近代实业家张謇先生的家乡。</p><p>据市场负责人介绍他们早与世博会组委会签订协议，今年上海世博会上所用的家纺产品全部由他们提供。其家纺产品在国际国内声誉很高，国内市场份额己占40％以上、市场年成交额300多亿元，同时还有大量产品出口，三星镇家纺产品年销售收入己超过500多亿元。一个产业做大做强后带动了物流业、旅馆业、餐饮业、旅游业等三产业的迅速兴起，提供了大量的就业岗位，为当地农民的脱贫致富、走上富裕道路作出了重大贡献。可见，规模效益是促进经济发展的有效途径。目前，家纺城正在进行三期扩建，到2012年全部竣工后，将是全国最大的家纺产品及辅料市场，交易额可以再翻一番，其服务也会达到一流的国际化标准。</p><p>在海门县工商局举办的交流会上赵国兵局长首先介绍了海门县和县工商局的情况：海门县国土面积只有1100平方公里、人口103万，2009年的大口径财政55亿元，地方一般性收入27亿多元，海门县在江苏省仅是一个中等发达的县。海门县工商局下辖10个分局（所）、管辖各类市场主体7万余户，有工商干部职工212人，人均监管约350户，监管任务虽然很重，但管理规笵有序，他们真正将管理寓于服务之中，为当地的经济社会发展做出了巨大的贡献。所以，当地党委、政府对他们很信任，监管对象对他们也很欢迎。</p><p>我省现有在职干部职工10100余人，有市场主体约60万户其中：个体工商户49万户、各类企业11万户，按此计算、每人平均只监管60户左右，是海门县的六分之一强，与江苏省全省的干部职工和监管对象人均170余户来比较、我省人均监管数也只有其三分之一强，且我省市场主体的密度及数量主要还在兰州市辖区内，大多数市州还达不到平均水平，监管对象的情况也不相同、江苏省市场主体中的企业数占市场主体的30％左右，我省市场主体中的企业数只占市场主体数的18％左右。众所周知企业越多监管难度相对也越大。且我省的工商所均为科级建制、科级干部配备的比例也很高，而江苏省的工商所均为股级建制，我们有什么理由监管不好呢？就我省目前基层干部职工状况来看，还没有真正摆脱开以费代管、以罚代管的阴影，干部职工的业务素质相对来说还比较差，对诸多现代业态还缺乏管理知识，管理方法、不知道如何去监管，对多元化的市场主体也不知道服务什么，如何去服务，监管、服务水平之差、效率之低，确实令人担忧，奋起直追、势在必行。</p><p>年初，张绪胜局长在全系统工作会议上把今年确定为“素质效能提升年”很有前瞻性、很有必要。只有在全系统形成共识，上下团结一心、切实贯彻执行，使干部职工的整体素质和履职效能在现有基础上得到大幅度的提升，总局周伯华局长提出的“四个只有”才有可能在我省不落空。否则，工商行政管理服务发展的措施如何落实到位？良好的工商管理形象又何谈之有呢？</p><p>在海门看望了我省在此挂职锻炼的10名基层干部。南通市工商局的干部培训基地设在海门县。陈达江代表挂职的同志就工作、学习、生活方面的情况向考察团和江苏省、南通市局的领导做了简要汇报。其寿局长勉励了挂职的同志并提出了新要求，同时代表省局党组和挂职干部向江苏省、南通市和海门县局，在工作上给予无私的传、帮、带，在生活上给予无微不致的关怀，表示衷心的感谢。</p><p>蒋亚亭局长特地从南通市赶到海门参加海门县局所设的欢迎晚宴，夜宿南通市文峰宾馆316室。晚上原坦克十二师副师长现转业在南通市科协工作的路云山夫妇二人到宾馆看望了我，聊了一段别后情况。</p><p>15日是星期六，上午参观南通狼山景区，景区有沿长江边的剑山、军山、狼山、马鞍山、黄泥山五座小山的自然景观和人工所建的滨江公园组成，最高的军山海拔118米，狼山最高点116米，坐索道上山从山下至山上只用4分钟即到，是国内旅游景点最短的索道。山虽不高但面临长江十分险峻，晴天站在山颠或江岸上都可隔江望到苏州的常熟市，面对滚滚东去的浩淼长江，《三国演义》的开篇词即湧上心头：“滚滚长江东逝水，浪花淘尽英雄。是非成败转头空，青山依旧在，几度夕阳红。白发渔樵江渚上，惯看秋月春风。一壶浊酒喜相逢，古今多少事，都付笑谈中。”心胸顿时也开阔无比。狼山景区已经开发建设得十分漂亮，是南通市民节假日休闲的好去处，南通市民真是好福气。</p><p>狼山又名紫琅山，不仅有很多美丽的传说，而且也是苏中平原上的一处佛教圣地，我自幼就知道狼山菩萨很灵验，有求必应，且有先照远后照近的说法，这其中也说明南通人的大度，先人后己。改革开放以前交通并不是很方便，距我家乡曲霞镇约有一百五十华里的路程，辗转乘车跟徒步而行用的时间差不多。因此，很多人去拜佛都选择徒步前往，五至七天才能一个往返，心诚则灵。</p><p>我是一个无神论者，但在狼山也许下了求菩萨保佑全家幸福安康的心愿。我想为人一生只要时刻牢记“离头三尺有神灵”，对神有敬畏感，同时记住儒家孔老夫子“勿以善小而不为、勿以恶小而为之”的古训，多做好事、善事，不做坏事、恶事，作为一名党员领导干部更要时刻遵守党纪国法，许下的心愿哪会有不灵验的呢？</p><p>午饭安排在景区内以江鲜为特色，饭后离开南通赴扬州市局考察学习。两个多小时行程后到达扬州，何月林局长（镇江人，在这次江苏省局的干部调整中也提拔为副巡视员）早就安排纪检组长朱彤和个体处王处长等待，陪同我们参观了全国四大私家园林之一的《个园》、另外三个是北京颐和园、河北承德山庄、苏州拙政园。《个园》是清朝扬州盐商黄志云的私宅，东关街是一条百年老街，经过整修面貌一新，还有江泽民同志的故居东圈门16号等景点，平山堂所在的大明寺此前曾参观过。晚宴设席文津酒店，让团友品尝了真正的淮扬菜系，是夜下榻扬州市局培训基地文津酒店。江苏省局为了满足干部培训经常化的需要，省局和各市局都有一个培训基地，不仅轮训本级干部而且还要交叉承担全省系统内干部的培训任务。在我们到达海门的前两天，我省挂职干部还到扬州参加了三天培训。</p><p>我省的干部培训工作近几年虽制定了规划、强化了措施，但从提高全省干部素质的需要和至今没有一个固定的场所的实际情况既让我们看到了原因和差距的所在，也给今后工商事业的发展留下了一个问号。</p><p>16日是星期天，上午参观了瘦西湖。在南通时路云山同志嘱咐我有时间写一篇游记，人在旅途未暇顾及。参观扬州后进一步了解到扬州市申遗成功、已荣膺世界历史文化名城的殊荣。扬州开埠甚早，在历史上一直是商旅发达的重要码头，自古就有隋炀帝开凿大运河看琼花的故事，据说琼花只生长在扬州，其他地方不能成活，此说令人难以置信又不得不信，我自幼至今在离扬州只有近百里的家乡还真正没有看到过琼花。鉴真和尚东渡日本、杜十娘怒沉百宝箱、民族英雄史可法抗清、乾隆皇帝六下江南游扬州、郑板桥等扬州八怪及现代文坛中散文大家朱自清、汪曾祺先生、中国工程院何祚庥院士，更有前任党的总书记江泽民同志、现任总书记胡锦涛同志等等一批古今名人轶事。（泰州市原属扬州所辖，因扬州市原有800余万人口于1996年分设了两个地级市。）</p><p>历史上还遗留下不少的自然景观、淳朴的民风民俗、丰富的饮食文化等诸多道不尽的典故、说不完的故事，虽然有感想发，但写游记绝对是不能勉强的了。因为，朱自清老先生于1934年11月20日就在《人间世》杂志上发表了散文《说扬州》，把扬州的历史渊源、人文遗迹、自然景观、民风民俗、饮食文化表述得淋漓尽致，况且在自己以前的一篇短文《故乡情结》中也略有叙述，不得再去重复，就此写杂记一篇、赋《七绝》一组，撰楹联一付，作为此行的纪念吧。</p><p>《美在扬州》（外四首）<br>三月烟花美扬州，千年古城故事多。人杰地灵今胜昔，华夏赤子续春秋。</p><p>《游瘦西湖》<br>桃红柳绿满堤岸，塔桥亭榭隐其间。游客摩肩踏青来，舟随船娘歌谣远。</p><p>《逛东关街》<br>青砖青瓦青石街，院内花香扑面来。“长安客栈”长安客，恍若置身百年外。</p><p>《谒平山堂》<br>香客趋鹜平山堂，皆源追崇大和尚。百折东渡播友谊，盛举憾世誉扶桑。</p><p>《参观个园》<br>个园玲珑夺天工，堂舍巧布山水中。观石赏竹胜景处，春夏秋冬一院逢。</p><p>《楹联一付》<br>瘦、瘦、瘦，竹瘦、石瘦、湖瘦，瘦出奇秀。<br>美、美、美，花美、月美、人美，美在扬州。</p><p>横披为：“奇秀扬州”<br>扬州又称“月城”。</p><p>下午返南京禄口机场4点乘中国东方航空公司的MU2895航班经停西安回兰州，回到市区已有9点多钟，灯火阑珊，流光溢彩，别有一番景象。回顾几天的考察学习，收获颇丰。</p><p>考察期间团友们常对我说：老天真不公平，江苏经济发达、自然风光好、人们的生活富裕滋润，真不愧为上有天堂下有苏杭。甘肃经济落后、生态环境差、人们的生活仅为生存。你是江苏人是不是很骄傲很自豪？为家乡而骄傲自豪，理所当然。其实，我到甘肃已生活了三十多年，一方水土养一方人，在我心目中甘肃就是我的第二故乡。事实上甘肃也不是处处都落后，也有很多优点。确实经济发达地区有很多长处，也有很多先进经验可学。但我们也不要自卑，要认真审视自己的长处和不足，既不可妄自尊大，更不可妄自菲薄。他山之石可以攻玉，一定要把这次考察学习的成果举一反三、运用到实际工作中去，这样才能不断进步，超越前者。</p><p>我祝愿我的故乡越来越美好，我更祝愿甘肃在党中央、国务院的关怀下发展越来越迅速。［（今年5月2日国务院办公厅印发了《关于进一步支持甘肃经济社会发展的若干意见》）（这个《意见》应该说是去年6月中旬国务院组织34个部委到甘肃调研的成果。当时，我全程陪同参加了“市场流通和对内对外开放组”在全省各地的调研）］。同时，我一定会在有效工作时间内为建设第二故乡尽我绵薄之力。</p><p>赴江苏考察学习期间正好是农历的三月底四月初，到处山青水秀、阳光明媚，一片江南春色、气候宜人，所到各地又受到了热情接待和周密安排、心旷神怡、身心俱释，痛快之极。在此对江苏省及各市县局的领导和参加接待的同志深表衷心感谢！同时在考察期间受到各位团友的关心照顾在此也一并致谢。</p>"
     }
-            // 其他文章保持不变
         ];
  
         // 当前文章索引 
@@ -1065,6 +1133,8 @@
         let searchTimer = null;
         let sidebarHidden = false; // 侧边栏隐藏状态
         let lastScrollTop = 0; // 上次滚动位置
+        let currentSearchKeyword = ''; // 当前搜索关键词
+        let activeFilter = 'all'; // 活跃的分类筛选
         
         // 初始化加载 
         document.addEventListener('DOMContentLoaded',  () => {
@@ -1178,12 +1248,12 @@
                 </h2>
             `;
             
-            const articleList = document.getElementById('articleList');
-            articleList.parentElement.insertBefore(catalogHeader, articleList);
+            const filterControls = document.querySelector('.filter-container');
+            sidebar.insertBefore(catalogHeader, filterControls);
             
             // 当文章数超过5篇时自动折叠
             if (articles.length > 5) { 
-                articleList.style.display = 'none';
+                document.getElementById('articleList').style.display = 'none';
                 document.getElementById('fold-icon').textContent = '▶';
             }
         }
@@ -1263,27 +1333,74 @@
             }
         }
         
+        // 应用筛选条件
+        function applyFilters() {
+            let filtered = [...articles];
+            
+            // 应用分类筛选
+            if (activeFilter === '其它') {
+                filtered = filtered.filter(article => article.category !== '诗' && article.category !== '词');
+            } else if (activeFilter !== 'all') {
+                filtered = filtered.filter(article => article.category === activeFilter);
+            }
+            
+            return filtered;
+        }
+        
+        // 筛选文章
+        function filterArticles() {
+            const selectedValue = document.getElementById('categoryFilter').value;
+            if (selectedValue) { // 确保不是占位选项
+                activeFilter = selectedValue;
+                renderArticleList();
+                
+                // 如果当前文章不在筛选结果中，加载筛选后的第一篇文章
+                const filteredArticles = applyFilters();
+                if (filteredArticles.length > 0 && !filteredArticles.includes(articles[currentArticleIndex])) {
+                    loadArticle(0);
+                }
+            }
+        }
+        
         // 渲染目录 
         function renderArticleList() {
+            const filteredArticles = applyFilters();
             const listContainer = document.getElementById('articleList');  
-            listContainer.innerHTML  = articles.map(article  => `
+            listContainer.innerHTML  = filteredArticles.map(article  => `
                 <li>
-                    <a href="#" onclick="loadArticle(${articles.indexOf(article)})">  
+                    <a href="#" onclick="loadArticle(${filteredArticles.indexOf(article)})">  
                         <span class="article-number">${article.id}.</span>  
                         ${article.title}  
                         <small>(${article.category})</small>  
                     </a>
                 </li>
             `).join('');
+            
+            // 如果筛选结果为空
+            if (filteredArticles.length === 0) {
+                listContainer.innerHTML = `
+                    <li style="text-align: center; padding: 15px; color: #8b4513;">
+                        没有找到符合条件的文章
+                    </li>
+                `;
+            }
         }
         
         // 加载文章 
         function loadArticle(index) {
+            const filteredArticles = applyFilters();
+            
+            // 如果没有筛选结果，不加载任何文章
+            if (filteredArticles.length === 0) return;
+            
+            // 确保索引在有效范围内
+            if (index < 0 || index >= filteredArticles.length) return;
+            
             document.getElementById('articleText').innerHTML  = '<div class="loading">🕯️ 文章加载中...</div>';
             
             setTimeout(() => {
-                currentArticleIndex = index;
-                const article = articles[index];
+                const article = filteredArticles[index];
+                currentArticleIndex = articles.indexOf(article); // 保存原始索引
                 
                 document.getElementById('articleTitle').textContent  = article.title;  
                 document.getElementById('articleMeta').innerHTML  = `
@@ -1291,7 +1408,21 @@
                     <span>日期：${article.date}</span>  
                     <span>编号：${article.id}</span>  
                 `;
-                document.getElementById('articleText').innerHTML  = article.content;  
+                
+                // 渲染文章内容并处理缩进
+                let content = article.content;
+                
+                // 处理段落缩进（非诗非词）
+                if (article.category !== '诗' && article.category !== '词') {
+                    content = content.replace(/<p>/g, '<p class="paragraph-indent">');
+                }
+                
+                // 应用关键词高亮
+                if (currentSearchKeyword) {
+                    content = highlightContent(content, currentSearchKeyword);
+                }
+                
+                document.getElementById('articleText').innerHTML  = content;  
                 
                 updateNavButtons();
                 
@@ -1309,16 +1440,19 @@
         
         // 更新导航按钮 
         function updateNavButtons() {
+            const filteredArticles = applyFilters();
+            const currentFilteredIndex = filteredArticles.indexOf(articles[currentArticleIndex]);
+            
             const prevButtons = document.querySelectorAll('#prevArticle,  #prevArticleBottom, #mobilePrevArticle');
             const nextButtons = document.querySelectorAll('#nextArticle,  #nextArticleBottom, #mobileNextArticle');
             
             // 上一篇按钮 
             prevButtons.forEach(btn  => {
-                if (currentArticleIndex > 0) {
+                if (currentFilteredIndex > 0) {
                     btn.style.visibility  = 'visible';
                     btn.onclick  = (e) => {
                         e.preventDefault();  
-                        loadArticle(currentArticleIndex - 1);
+                        loadArticle(currentFilteredIndex - 1);
                     };
                 } else {
                     btn.style.visibility  = 'hidden';
@@ -1328,11 +1462,11 @@
             
             // 下一篇按钮 
             nextButtons.forEach(btn  => {
-                if (currentArticleIndex < articles.length  - 1) {
+                if (currentFilteredIndex < filteredArticles.length  - 1) {
                     btn.style.visibility  = 'visible';
                     btn.onclick  = (e) => {
                         e.preventDefault();  
-                        loadArticle(currentArticleIndex + 1);
+                        loadArticle(currentFilteredIndex + 1);
                     };
                 } else {
                     btn.style.visibility  = 'hidden';
@@ -1343,11 +1477,11 @@
         
         // 搜索功能 
         function searchArticles() {
-            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();  
+            currentSearchKeyword = document.getElementById('searchInput').value.trim().toLowerCase();  
             const filtered = articles.filter(article  => 
-                article.title.toLowerCase().includes(keyword)  || 
-                article.content.toLowerCase().includes(keyword)  ||
-                article.category.toLowerCase().includes(keyword)
+                article.title.toLowerCase().includes(currentSearchKeyword)  || 
+                article.content.toLowerCase().includes(currentSearchKeyword)  ||
+                article.category.toLowerCase().includes(currentSearchKeyword)
             );
             
             const listContainer = document.getElementById('articleList');  
@@ -1355,7 +1489,7 @@
                 <li>
                     <a href="#" onclick="loadArticle(${articles.indexOf(article)})">  
                         <span class="article-number">${article.id}.</span>  
-                        ${highlightKeyword(article.title,  keyword)}
+                        ${highlightKeyword(article.title,  currentSearchKeyword)}
                         <small>(${article.category})</small>  
                     </a>
                 </li>
@@ -1365,9 +1499,14 @@
             if (filtered.length === 0) {
                 listContainer.innerHTML = `
                     <li style="text-align: center; padding: 15px; color: #8b4513;">
-                        未找到包含"${keyword}"的文章
+                        未找到包含"${currentSearchKeyword}"的文章
                     </li>
                 `;
+            }
+            
+            // 如果有搜索结果，加载第一篇
+            if (filtered.length > 0) {
+                loadArticle(articles.indexOf(filtered[0]));
             }
         }
         
@@ -1380,12 +1519,29 @@
             );
         }
         
+        // 文章内容关键词高亮
+        function highlightContent(html, keyword) {
+            if (!keyword) return html;
+            return html.replace(
+                new RegExp(`(${keyword})`, 'gi'),
+                '<span class="highlight">$1</span>'
+            );
+        }
+        
         // 键盘导航 
         document.addEventListener('keydown',  (e) => {
-            if (e.key  === 'ArrowLeft' && currentArticleIndex > 0) {
-                loadArticle(currentArticleIndex - 1);
-            } else if (e.key  === 'ArrowRight' && currentArticleIndex < articles.length  - 1) {
-                loadArticle(currentArticleIndex + 1);
+            if (e.key  === 'ArrowLeft') {
+                const filteredArticles = applyFilters();
+                const currentFilteredIndex = filteredArticles.indexOf(articles[currentArticleIndex]);
+                if (currentFilteredIndex > 0) {
+                    loadArticle(currentFilteredIndex - 1);
+                }
+            } else if (e.key  === 'ArrowRight') {
+                const filteredArticles = applyFilters();
+                const currentFilteredIndex = filteredArticles.indexOf(articles[currentArticleIndex]);
+                if (currentFilteredIndex < filteredArticles.length - 1) {
+                    loadArticle(currentFilteredIndex + 1);
+                }
             }
         });
         
