@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>三省轩主文集</title>
+    <title>三省轩主文集 - 扉页</title>
     <style>
+        /* 书卷风格基础 */
         :root {
             --paper-color: #f8f4e9;
             --ink-color: #5a3921;
@@ -22,93 +23,144 @@
             align-items: center;
             min-height: 100vh;
             perspective: 1000px;
+            overflow-x: hidden;
         }
         
-        /* 书册容器 - 增加移动端高度 */
+        /* 书册容器 */
         .book-cover {
             width: 90%;
             max-width: 800px;
-            min-height: 60vh; /* 新增：确保最小高度 */
+            height: auto;
             position: relative;
             transform-style: preserve-3d;
             transition: all 0.8s ease;
-            display: flex; /* 新增：弹性布局 */
-            align-items: center; /* 新增：垂直居中 */
+            z-index: 10;
         }
         
-        /* 封面设计 - 增加内边距 */
+        /* 封面设计 */
         .front-cover {
             background: var(--paper-color);
             border: 1px solid #cdaa7d;
             box-shadow: 0 10px 25px var(--shadow-color);
-            padding: 4rem 2rem; /* 增大上下内边距 */
+            padding: 3rem 2rem;
             text-align: center;
             transform-origin: left center;
             backface-visibility: hidden;
-            width: 100%;
         }
         
-        /* 标题组自适应 */
         .title-group {
             margin-bottom: 2.5rem;
             position: relative;
-            word-break: keep-all; /* 防止文字换行 */
         }
         
-        /* 智能字号系统 */
         .title-group h1 {
             color: var(--ink-color);
-            font-size: clamp(1.8rem, 6vw, 2.8rem); /* 智能缩放 */
+            font-size: 2.8rem;
             margin: 0 0 0.5rem;
-            letter-spacing: 0.3rem; /* 缩小字距适应长标题 */
+            letter-spacing: 0.5rem;
             text-shadow: 2px 2px 3px var(--shadow-color);
-            line-height: 1.3; /* 增加行高 */
         }
         
         .title-group::after {
             content: "";
             display: block;
-            width: clamp(100px, 30vw, 150px); /* 响应式宽度 */
+            width: 150px;
             height: 2px;
             background: linear-gradient(to right, transparent, var(--accent-color), transparent);
-            margin: 1.5rem auto; /* 增加间距 */
+            margin: 1rem auto;
         }
         
-        /* 阅读按钮增强 */
+        /* 阅读按钮 */
         .open-book {
             display: inline-block;
-            padding: 1.2rem 3rem; /* 增大按钮 */
+            padding: 1rem 2.5rem;
             background: var(--accent-color);
             color: white;
+            text-decoration: none;
             border-radius: 3px;
-            font-size: clamp(1rem, 4vw, 1.1rem);
+            font-size: 1.1rem;
             transition: all 0.3s;
-            margin-top: 2rem; /* 增加上边距 */
+            margin-top: 1rem;
             border: none;
             cursor: pointer;
             box-shadow: 0 4px 6px var(--shadow-color);
-            width: auto; /* 取消固定宽度 */
-            min-width: 120px; /* 最小宽度 */
         }
         
+        .open-book:hover {
+            background: var(--ink-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px var(--shadow-color);
+        }
+        
+        /* 翻页动画 */
+        .book-cover.opened  {
+            transform: rotateY(-150deg);
+            pointer-events: none;
+        }
+        
+        /* 响应式设计 */
         @media (max-width: 768px) {
-            .book-cover {
-                min-height: 70vh; /* 移动端更高 */
-            }
-            
-            .front-cover {
-                padding: 3rem 1.5rem; /* 调整移动端内边距 */
-            }
-            
             .title-group h1 {
-                letter-spacing: 0.2rem; /* 移动端字距微调 */
+                font-size: 2rem;
+                letter-spacing: 0.3rem;
             }
             
             .open-book {
-                padding: 1rem 2.5rem;
-                margin-top: 2.5rem; /* 移动端增加间距 */
+                padding: 0.8rem 1.8rem;
             }
+        
+        /* 新增版权信息样式 */
+        .copyright {
+            color: #8b4513;
+            font-size: 0.85rem;
+            margin-top: 3rem;
+            position: relative;
+            opacity: 0.8;
+            line-height: 1.6;
         }
+        
+        .copyright::before {
+            content: "";
+            display: block;
+            width: 30px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #8b4513, transparent);
+            margin: 0 auto 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .copyright {
+                font-size: 0.75rem;
+                margin-top: 2.5rem;
+            }
+        /* 新增按钮底部间距 */
+        .open-book {
+            margin-bottom: 2rem; /* 新增下边距 */
+        }
+        
+        /* 优化版权信息间距 */
+        .copyright {
+            margin-top: 1.5rem; /* 减少顶部间距 */
+            padding-top: 1rem;  /* 改用内边距控制 */
+        }
+        
+        /* 调整分割线位置 */
+        .copyright::before {
+            margin-top: -0.5rem; /* 上移分割线 */
+        }
+        
+        @media (max-width: 768px) {
+            .open-book {
+                margin-bottom: 1.5rem;
+            }
+            .copyright {
+                margin-top: 1rem;
+                padding-top: 0.8rem;
+            }
+
+        }
+
+
     </style>
 </head>
 <body>
@@ -119,6 +171,12 @@
                 <p>古典诗词与散文杂记</p>
             </div>
             <button class="open-book" onclick="navigateWithAnimation()">阅读</button>
+            
+            <!-- 新增版权信息 -->
+            <div class="copyright">
+                © 2025-<script>document.write(new  Date().getFullYear())</script> 三省轩主<br>
+                版权所有·未经许可不得转载 
+            </div>
         </div>
     </div>
  
