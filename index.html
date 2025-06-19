@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>三省轩主文集 - 扉页</title>
     <style>
-        /* 书卷风格基础 */
         :root {
             --paper-color: #f8f4e9;
             --ink-color: #5a3921;
@@ -23,67 +22,68 @@
             align-items: center;
             min-height: 100vh;
             perspective: 1000px;
-            overflow-x: hidden;
         }
         
-        /* 书册容器 */
         .book-cover {
             width: 90%;
             max-width: 800px;
-            height: auto;
+            min-height: 60vh;
             position: relative;
             transform-style: preserve-3d;
             transition: all 0.8s ease;
-            z-index: 10;
+            display: flex;
+            align-items: center;
         }
         
-        /* 封面设计 */
         .front-cover {
             background: var(--paper-color);
             border: 1px solid #cdaa7d;
             box-shadow: 0 10px 25px var(--shadow-color);
-            padding: 3rem 2rem;
+            padding: 4rem 2rem;
             text-align: center;
             transform-origin: left center;
             backface-visibility: hidden;
+            width: 100%;
         }
         
         .title-group {
             margin-bottom: 2.5rem;
             position: relative;
+            word-break: keep-all;
         }
         
         .title-group h1 {
             color: var(--ink-color);
-            font-size: 2.8rem;
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
             margin: 0 0 0.5rem;
-            letter-spacing: 0.5rem;
+            letter-spacing: 0.3rem;
             text-shadow: 2px 2px 3px var(--shadow-color);
+            line-height: 1.3;
         }
         
         .title-group::after {
             content: "";
             display: block;
-            width: 150px;
+            width: clamp(100px, 30vw, 150px);
             height: 2px;
             background: linear-gradient(to right, transparent, var(--accent-color), transparent);
-            margin: 1rem auto;
+            margin: 1.5rem auto;
         }
         
-        /* 阅读按钮 */
         .open-book {
             display: inline-block;
-            padding: 1rem 2.5rem;
+            padding: 1.2rem 3rem;
             background: var(--accent-color);
             color: white;
-            text-decoration: none;
             border-radius: 3px;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 4vw, 1.1rem);
             transition: all 0.3s;
-            margin-top: 1rem;
+            margin: 2rem 0 3rem;
             border: none;
             cursor: pointer;
             box-shadow: 0 4px 6px var(--shadow-color);
+            width: auto;
+            min-width: 120px;
         }
         
         .open-book:hover {
@@ -92,28 +92,11 @@
             box-shadow: 0 6px 8px var(--shadow-color);
         }
         
-        /* 翻页动画 */
-        .book-cover.opened  {
-            transform: rotateY(-150deg);
-            pointer-events: none;
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .title-group h1 {
-                font-size: 2rem;
-                letter-spacing: 0.3rem;
-            }
-            
-            .open-book {
-                padding: 0.8rem 1.8rem;
-            }
-        
-        /* 新增版权信息样式 */
         .copyright {
             color: #8b4513;
             font-size: 0.85rem;
-            margin-top: 3rem;
+            margin-top: 0.5rem;
+            padding-top: 1.5rem;
             position: relative;
             opacity: 0.8;
             line-height: 1.6;
@@ -122,45 +105,47 @@
         .copyright::before {
             content: "";
             display: block;
-            width: 30px;
+            width: 80px;
             height: 1px;
             background: linear-gradient(to right, transparent, #8b4513, transparent);
-            margin: 0 auto 1rem;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .book-cover.opened  {
+            transform: rotateY(-150deg);
+            pointer-events: none;
         }
         
         @media (max-width: 768px) {
+            .book-cover {
+                min-height: 70vh;
+            }
+            
+            .front-cover {
+                padding: 3rem 1.5rem;
+            }
+            
+            .title-group h1 {
+                letter-spacing: 0.2rem;
+            }
+            
+            .open-book {
+                padding: 1rem 2.5rem;
+                margin: 2rem 0 2.5rem;
+            }
+            
             .copyright {
                 font-size: 0.75rem;
-                margin-top: 2.5rem;
+                padding-top: 1.2rem;
             }
-        /* 新增按钮底部间距 */
-        .open-book {
-            margin-bottom: 2rem; /* 新增下边距 */
-        }
-        
-        /* 优化版权信息间距 */
-        .copyright {
-            margin-top: 1.5rem; /* 减少顶部间距 */
-            padding-top: 1rem;  /* 改用内边距控制 */
-        }
-        
-        /* 调整分割线位置 */
-        .copyright::before {
-            margin-top: -0.5rem; /* 上移分割线 */
-        }
-        
-        @media (max-width: 768px) {
-            .open-book {
-                margin-bottom: 1.5rem;
+            
+            .copyright::before {
+                width: 50px;
             }
-            .copyright {
-                margin-top: 1rem;
-                padding-top: 0.8rem;
-            }
-
         }
-
-
     </style>
 </head>
 <body>
@@ -172,9 +157,8 @@
             </div>
             <button class="open-book" onclick="navigateWithAnimation()">阅读</button>
             
-            <!-- 新增版权信息 -->
             <div class="copyright">
-                © 2025-<script>document.write(new  Date().getFullYear())</script> 三省轩主<br>
+                © 2023-<script>document.write(new  Date().getFullYear())</script> 三省轩主<br>
                 版权所有·未经许可不得转载 
             </div>
         </div>
@@ -189,6 +173,14 @@
                 window.location.href  = "https://6948.kstore.space/ckn/index1.html"; 
             }, 800);
         }
+        
+        // 点击任意处收起书卷（仅调试用）
+        document.addEventListener('click',  function(e) {
+            if(!e.target.closest('.open-book')  &&
+               document.getElementById('bookCover').classList.contains('opened'))  {
+                document.getElementById('bookCover').classList.remove('opened'); 
+            }
+        });
     </script>
 </body>
 </html>
