@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="三省轩主文集 - 古典诗词与散文杂记">
+    <link rel="manifest" href="manifest.webmanifest"> 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'  viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%235a3921'>📜</text></svg>">
     <title>三省轩主文集</title>
     <style>
@@ -13,7 +14,6 @@
             --accent-color: #8b4513;
             --shadow-color: rgba(0,0,0,0.1);
         }
-        
         body {
             font-family: "楷体", "STKaiti", serif;
             background: #e8e0d0;
@@ -25,7 +25,6 @@
             min-height: 100vh;
             perspective: 1000px;
         }
-        
         .book-cover {
             width: 90%;
             max-width: 800px;
@@ -36,7 +35,6 @@
             display: flex;
             align-items: center;
         }
-        
         .front-cover {
             background: var(--paper-color);
             border: 1px solid #cdaa7d;
@@ -47,13 +45,11 @@
             backface-visibility: hidden;
             width: 100%;
         }
-        
         .title-group {
             margin-bottom: 2.5rem;
             position: relative;
             word-break: keep-all;
         }
-        
         .title-group h1 {
             color: var(--ink-color);
             font-size: clamp(1.8rem, 6vw, 2.8rem);
@@ -62,7 +58,6 @@
             text-shadow: 2px 2px 3px var(--shadow-color);
             line-height: 1.3;
         }
-        
         .title-group::after {
             content: "";
             display: block;
@@ -71,7 +66,6 @@
             background: linear-gradient(to right, transparent, var(--accent-color), transparent);
             margin: 1.5rem auto;
         }
-        
         .open-book {
             display: inline-block;
             padding: 1.2rem 3rem;
@@ -87,13 +81,11 @@
             width: auto;
             min-width: 120px;
         }
-        
         .open-book:hover {
             background: var(--ink-color);
             transform: translateY(-2px);
             box-shadow: 0 6px 8px var(--shadow-color);
         }
-        
         .copyright {
             color: #8b4513;
             font-size: 0.85rem;
@@ -103,7 +95,6 @@
             opacity: 0.8;
             line-height: 1.6;
         }
-        
         .copyright::before {
             content: "";
             display: block;
@@ -115,38 +106,17 @@
             left: 50%;
             transform: translateX(-50%);
         }
-        
         .book-cover.opened  {
             transform: rotateY(-150deg);
             pointer-events: none;
         }
-        
         @media (max-width: 768px) {
-            .book-cover {
-                min-height: 70vh;
-            }
-            
-            .front-cover {
-                padding: 3rem 1.5rem;
-            }
-            
-            .title-group h1 {
-                letter-spacing: 0.2rem;
-            }
-            
-            .open-book {
-                padding: 1rem 2.5rem;
-                margin: 2rem 0 2.5rem;
-            }
-            
-            .copyright {
-                font-size: 0.75rem;
-                padding-top: 1.2rem;
-            }
-            
-            .copyright::before {
-                width: 50px;
-            }
+            .book-cover { min-height: 70vh; }
+            .front-cover { padding: 3rem 1.5rem; }
+            .title-group h1 { letter-spacing: 0.2rem; }
+            .open-book { padding: 1rem 2.5rem; margin: 2rem 0 2.5rem; }
+            .copyright { font-size: 0.75rem; padding-top: 1.2rem; }
+            .copyright::before { width: 50px; }
         }
     </style>
 </head>
@@ -158,7 +128,6 @@
                 <p>古典诗词与散文杂记</p>
             </div>
             <button class="open-book" onclick="navigateWithAnimation()">阅读</button>
-            
             <div class="copyright">
                 © 2023-<script>document.write(new  Date().getFullYear())</script> 三省轩主<br>
                 版权所有·未经许可不得转载 
@@ -167,22 +136,16 @@
     </div>
  
     <script>
+        // 自动注册PWA功能 
+        if('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js?ver=1.0'); 
+        }
         function navigateWithAnimation() {
-            const book = document.getElementById('bookCover'); 
-            book.classList.add('opened'); 
-            
+            document.getElementById('bookCover').classList.add('opened'); 
             setTimeout(() => {
                 window.location.href  = "https://6948.kstore.space/ckn/index1.html"; 
             }, 800);
         }
-        
-        // 点击任意处收起书卷（仅调试用）
-        document.addEventListener('click',  function(e) {
-            if(!e.target.closest('.open-book')  &&
-               document.getElementById('bookCover').classList.contains('opened'))  {
-                document.getElementById('bookCover').classList.remove('opened'); 
-            }
-        });
     </script>
 </body>
 </html>
