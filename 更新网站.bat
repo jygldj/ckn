@@ -1,9 +1,8 @@
 @echo off
 rem ============================================================
-rem  DaoXuan WenJi - One-click Update Entry
-rem  Double-click to open the update tool in Edge browser.
-rem  Then click "Start Update" in the page, and commit via
-rem  GitHub Desktop as usual.
+rem  三省轩主文集 - 更新工具
+rem  双击此文件，会用浏览器打开更新页面。
+rem  然后在页面中点"选择文件夹"选中本文件夹，再点"开始更新"。
 rem ============================================================
 set "TOOL=%~dp0build.html"
 
