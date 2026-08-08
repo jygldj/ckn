@@ -4,27 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="三省轩主文集 - 古典诗词与散文杂记">
-    <link rel="manifest" href="manifest.webmanifest"> 
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'  viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%235a3921'>📜</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'   viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%235a3921'>📜</text></svg>">
     <title>三省轩主文集</title>
+    <!-- 百度统计代码 -->
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");  
+          hm.src   = "https://hm.baidu.com/hm.js?1dc583b2115e76561cf2279a6f8af31c";  
+          var s = document.getElementsByTagName("script")[0];   
+          s.parentNode.insertBefore(hm,   s);
+        })();
+    </script>
     <style>
         :root {
-            --paper-color: #f8f4e9;
-            --ink-color: #5a3921;
-            --accent-color: #8b4513;
+            --paper-color: #f8f4e9;  /* 宣纸黄 */
+            --ink-color: #5a3921;    /* 茶褐色 */
+            --accent-color: #8b4513; /* 赭石色 */
             --shadow-color: rgba(0,0,0,0.1);
         }
-        body {
-            font-family: "楷体", "STKaiti", serif;
-            background: #e8e0d0;
+        
+        html, body {
+            width: 100%;
+            height: 100%;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
+        }
+        
+        body {
+            font-family: "楷体", "STKaiti", serif;
+            background: var(--paper-color) fixed;
+            color: var(--ink-color);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            perspective: 1000px;
+            background-image: url('https://img.zcool.cn/community/01f3fa5d18d473a801213f26e4776a.jpg@1280w_1l_2o_100sh.jpg');  
+            background-size: cover;
+            background-attachment: fixed;
+            background-blend-mode: overlay;
+            background-repeat: no-repeat;
+            background-position: center;
         }
+        
         .book-cover {
             width: 90%;
             max-width: 800px;
@@ -35,123 +58,183 @@
             display: flex;
             align-items: center;
         }
+        
         .front-cover {
-            background: var(--paper-color);
-            border: 1px solid #cdaa7d;
+            background: rgba(248, 244, 233, 0.95); /* 半透明宣纸黄 */
+            border: 1px solid #cdaa7d; /* 檀木色边框 */
             box-shadow: 0 10px 25px var(--shadow-color);
-            padding: 4rem 2rem;
+            padding: 3rem;
             text-align: center;
             transform-origin: left center;
             backface-visibility: hidden;
             width: 100%;
         }
-        .title-group {
-            margin-bottom: 2.5rem;
-            position: relative;
-            word-break: keep-all;
+ 
+        /* 修改后的照片代码（与简介页保持一致） */
+        .author-portrait {
+            width: 280px;
+            height: 350px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center;
+            border: 3px solid #cdaa7d;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: block; /* 新增 */
         }
-        .title-group h1 {
-            color: var(--ink-color);
-            font-size: clamp(1.8rem, 6vw, 2.8rem);
-            margin: 0 0 0.5rem;
-            letter-spacing: 0.3rem;
-            text-shadow: 2px 2px 3px var(--shadow-color);
-            line-height: 1.3;
-        }
-        .title-group::after {
-            content: "";
-            display: block;
-            width: clamp(100px, 30vw, 150px);
-            height: 2px;
-            background: linear-gradient(to right, transparent, var(--accent-color), transparent);
-            margin: 1.5rem auto;
-        }
+        
         .open-book {
             display: inline-block;
-            padding: 1.2rem 3rem;
+            padding: 1rem 3rem;
             background: var(--accent-color);
             color: white;
             border-radius: 3px;
-            font-size: clamp(1rem, 4vw, 1.1rem);
+            font-size: 1.1rem;
             transition: all 0.3s;
-            margin: 2rem 0 3rem;
+            margin: 2rem 0;
             border: none;
             cursor: pointer;
             box-shadow: 0 4px 6px var(--shadow-color);
-            width: auto;
-            min-width: 120px;
+            font-family: "楷体", serif;
         }
+        
         .open-book:hover {
             background: var(--ink-color);
             transform: translateY(-2px);
             box-shadow: 0 6px 8px var(--shadow-color);
         }
-        .copyright {
-            color: #8b4513;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            padding-top: 1.5rem;
-            position: relative;
-            opacity: 0.8;
-            line-height: 1.6;
-        }
-        .copyright::before {
-            content: "";
-            display: block;
-            width: 80px;
-            height: 1px;
-            background: linear-gradient(to right, transparent, #8b4513, transparent);
+ 
+        /* 友情链接 */
+        .friend-links {
             position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
         }
-        .book-cover.opened  {
+        
+        .friend-links a {
+            color: var(--accent-color);
+            text-decoration: none;
+            margin: 0 15px;
+            border-bottom: 1px dashed;
+            padding-bottom: 3px;
+            transition: all 0.3s;
+        }
+        
+        .friend-links a:hover {
+            color: var(--ink-color);
+            border-bottom-style: solid;
+        }
+ 
+        /* 访问量 */
+        .visit-counter {
+            position: absolute;
+            right: 30px;
+            bottom: 30px;
+            font-size: 0.9rem;
+            color: #7A8B7B;
+        }
+        
+        .book-cover.opened   {
             transform: rotateY(-150deg);
             pointer-events: none;
         }
+ 
         @media (max-width: 768px) {
-            .book-cover { min-height: 70vh; }
-            .front-cover { padding: 3rem 1.5rem; }
-            .title-group h1 { letter-spacing: 0.2rem; }
-            .open-book { padding: 1rem 2.5rem; margin: 2rem 0 2.5rem; }
-            .copyright { font-size: 0.75rem; padding-top: 1.2rem; }
-            .copyright::before { width: 50px; }
+            .front-cover {
+                padding: 2.5rem;
+            }
+            
+            .author-portrait {
+                width: 220px;
+                height: 275px; /* 保持4:5比例 */
+            }
+            
+            .friend-links {
+                bottom: 25px;
+            }
+            
+            .visit-counter {
+                right: 25px;
+                bottom: 25px;
+            }
+        }
+ 
+        @media (max-width: 480px) {
+            .front-cover {
+                padding: 2rem 1rem;
+            }
+            
+            .author-portrait {
+                width: 180px;
+                height: 225px; /* 保持4:5比例 */
+            }
+            
+            .friend-links {
+                position: static;
+                margin-top: 1.5rem;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            
+            .visit-counter {
+                position: static;
+                text-align: center;
+                margin-top: 1rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="book-cover" id="bookCover">
         <div class="front-cover">
-            <div class="title-group">
-                <h1>三省轩主文集</h1>
-                <p>古典诗词与散文杂记</p>
+            <!-- 修改为img标签（与简介页相同实现方式） -->
+            <img src="images/ckn.webp"  class="author-portrait" alt="三省轩主肖像">
+            
+            <!-- 进入按钮 -->
+            <button class="open-book" onclick="navigateWithAnimation()">进入文集</button>
+            
+            <!-- 友情链接 -->
+            <div class="friend-links">
+                <a href="https://dxwj.pages.dev/"   target="_blank">道玄文集</a>
+                <a href="https://www.gushiwen.org/"   target="_blank">古诗文网</a>
+                <a href="https://www.ruiwen.com/"   target="_blank">瑞文网</a>
+                <a href="https://www.zhonghuashu.com/"   target="_blank">中华书库</a>
             </div>
-            <button class="open-book" onclick="navigateWithAnimation()">阅读</button>
-            <div class="copyright">
-                © 2023-<script>document.write(new  Date().getFullYear())</script> 三省轩主<br>
-                版权所有·未经许可不得转载 
+            
+            <!-- 访问量 -->
+            <div class="visit-counter">
+                今日访客: <span id="visitCount">0</span>
             </div>
         </div>
     </div>
  
     <script>
-        // 优化版PWA注册（移除版本参数）
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('ServiceWorker注册成功:', reg.scope))
-                .catch(err => console.error('ServiceWorker注册失败:', err));
+        // PWA支持 
+        if('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js?ver=1.0');   
         }
         
-        // 页面跳转动画（保持原有逻辑）
-        document.addEventListener('DOMContentLoaded', () => {
+        // 翻页动画导航 
+        function navigateWithAnimation() {
+            document.getElementById('bookCover').classList.add('opened');  
             setTimeout(() => {
-                document.getElementById('bookCover').classList.add('opened');
-                setTimeout(() => {
-                    window.location.href = "https://6948.kstore.space/ckn/feiye.html";
-                }, 1000);
-            }, 3000); // 3秒后开始动画
-        });
+                window.location.href   = "https://6948.kstore.space/ckn/index1.html";  
+            }, 800);
+        }
+        
+        // 访问计数 
+        (function() {
+            const today = new Date().toLocaleDateString();
+            const key = 'visit_' + today;
+            let count = localStorage.getItem(key)   || 0;
+            count = parseInt(count) + 1;
+            localStorage.setItem(key,   count);
+            document.getElementById('visitCount').textContent   = count;
+        })();
     </script>
 </body>
 </html>

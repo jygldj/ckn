@@ -1,54 +1,89 @@
-// 封面专用强缓存脚本
-const COVER_CACHE = 'ckn-cover-cache-v1';
-const COVER_URLS = [
-  'https://jygldj.github.io/ckn/index.html', // 封面HTML
-  'https://jygldj.github.io/ckn/manifest.webmanifest', // manifest文件
-  'data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'.9em\' font-size=\'90\' fill=\'%235a3921\'>📜</text></svg>' // 封面图标
+/*
+ * 三省轩主文集 · Service Worker（sw.js）
+ */
+var CACHE = 'sxxzwj-v1';
+var RACE_TIMEOUT = 3000;
+
+var CORE = [
+    './',
+    './index.html',
+    './index1.html',
+    './search.html',
+    './jianjie.html',
+    './build.html',
+    './style.css',
+    './cover.css',
+    './render.js',
+    './build-core.js',
+    './articles.js',
+    './images/ckn.jpg'
 ];
 
-// 安装时缓存封面资源
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(COVER_CACHE)
-      .then(cache => cache.addAll(COVER_URLS))
-      .then(() => self.skipWaiting()) // 立即激活ServiceWorker
-  );
-});
-
-// 激活时清理旧缓存
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.filter(name => name !== COVER_CACHE)
-          .map(name => caches.delete(name))
-      );
-    })
-  );
-});
-
-// 请求时优先使用缓存（封面资源强制缓存）
-self.addEventListener('fetch', event => {
-  const requestUrl = event.request.url;
-  
-  // 仅处理封面相关资源
-  if (COVER_URLS.includes(requestUrl) || requestUrl.startsWith('https://jygldj.github.io/ckn/')) {
-    event.respondWith(
-      caches.match(event.request).then(response => {
-        // 缓存存在则直接返回（不请求网络）
-        if (response) return response;
-        
-        // 缓存不存在时才从网络获取并更新缓存
-        return fetch(event.request).then(networkRes => {
-          const cacheCopy = networkRes.clone();
-          caches.open(COVER_CACHE).then(cache => cache.put(event.request, cacheCopy));
-          return networkRes;
-        });
-      })
+self.addEventListener('install', function (e) {
+    e.waitUntil(
+        caches.open(CACHE).then(function (cache) {
+            return cache.addAll(CORE.map(function (u) { return u + '?v=1'; }));
+        })
     );
-    return;
-  }
-  
-  // 其他资源正常处理（不缓存扉页）
-  event.respondWith(fetch(event.request));
+});
+
+self.addEventListener('activate', function (e) {
+    e.waitUntil(
+        caches.keys().then(function (keys) {
+            return Promise.all(keys.map(function (k) {
+                if (k.indexOf('sxxzwj-') === 0 && k !== CACHE) {
+                    return caches.delete(k);
+                }
+            }));
+        }).then(function () { return self.clients.claim(); })
+    );
+});
+
+self.addEventListener('fetch', function (e) {
+    var req = e.request;
+    if (req.method !== 'GET') return;
+
+    var url = new URL(req.url);
+    if (url.origin !== self.location.origin) return;
+
+    var accept = req.headers.get('accept') || '';
+    var isHTML = req.mode === 'navigate' || accept.indexOf('text/html') !== -1;
+    var isArticleData = url.pathname.indexOf('/articles.js') !== -1;
+
+    if (isHTML || isArticleData) {
+        e.respondWith(
+            Promise.race([
+                fetch(req).then(function (resp) {
+                    var copy = resp.clone();
+                    caches.open(CACHE).then(function (c) { c.put(req, copy); });
+                    return resp;
+                }),
+                new Promise(function (resolve) {
+                    setTimeout(function () {
+                        caches.match(req).then(function (cached) {
+                            if (cached) resolve(cached);
+                            else resolve(new Response('离线且无缓存', { status: 503 }));
+                        });
+                    }, RACE_TIMEOUT);
+                })
+            ]).catch(function () {
+                return caches.match(req);
+            })
+        );
+        return;
+    }
+
+    e.respondWith(
+        caches.match(req).then(function (cached) {
+            var fetchPromise = fetch(req).then(function (resp) {
+                if (resp && resp.ok) {
+                    var copy = resp.clone();
+                    caches.open(CACHE).then(function (c) { c.put(req, copy); });
+                }
+                return resp;
+            }).catch(function () { return cached; });
+
+            return cached || fetchPromise;
+        })
+    );
 });
