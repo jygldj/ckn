@@ -3,54 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta name="description" content="道玄文集 - 古典诗词与散文杂记">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%235a3921'>📜</text></svg>">
-    <title>道玄文集</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- 百度统计代码（异步加载，不阻塞页面渲染） -->
-    <script async src="https://hm.baidu.com/hm.js?35b5524e050763995511f80570ae121c"></script>
-    <link rel="stylesheet" href="cover.css">
+    <meta name="description" content="三省轩主文集 - 古典诗词与散文杂记">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'   viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%235a3921'>📜</text></svg>">
+    <title>三省轩主文集</title>
+    <!-- 百度统计代码 -->
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");  
+          hm.src   = "https://hm.baidu.com/hm.js?1dc583b2115e76561cf2279a6f8af31c";  
+          var s = document.getElementsByTagName("script")[0];   
+          s.parentNode.insertBefore(hm,   s);
+        })();
+    </script>
+    <style>
+        :root {
+            --paper-color: #f8f4e9;  /* 宣纸黄 */
+            --ink-color: #5a3921;    /* 茶褐色 */
+            --accent-color: #8b4513; /* 赭石色 */
+            --shadow-color: rgba(0,0,0,0.1);
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        body {
+            font-family: "楷体", "STKaiti", serif;
+            background: var(--paper-color) fixed;
+            color: var(--ink-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('https://img.zcool.cn/community/01f3fa5d18d473a801213f26e4776a.jpg@1280w_1l_2o_100sh.jpg');  
+            background-size: cover;
+            background-attachment: fixed;
+            background-blend-mode: overlay;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .book-cover {
+            width: 90%;
+            max-width: 800px;
+            min-height: 60vh;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.8s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .front-cover {
+            background: rgba(248, 244, 233, 0.95); /* 半透明宣纸黄 */
+            border: 1px solid #cdaa7d; /* 檀木色边框 */
+            box-shadow: 0 10px 25px var(--shadow-color);
+            padding: 3rem;
+            text-align: center;
+            transform-origin: left center;
+            backface-visibility: hidden;
+            width: 100%;
+        }
+ 
+        /* 修改后的照片代码（与简介页保持一致） */
+        .author-portrait {
+            width: 280px;
+            height: 350px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center;
+            border: 3px solid #cdaa7d;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: block; /* 新增 */
+        }
+        
+        .open-book {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 3px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            margin: 2rem 0;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            font-family: "楷体", serif;
+        }
+        
+        .open-book:hover {
+            background: var(--ink-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px var(--shadow-color);
+        }
+ 
+        /* 友情链接 */
+        .friend-links {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+        
+        .friend-links a {
+            color: var(--accent-color);
+            text-decoration: none;
+            margin: 0 15px;
+            border-bottom: 1px dashed;
+            padding-bottom: 3px;
+            transition: all 0.3s;
+        }
+        
+        .friend-links a:hover {
+            color: var(--ink-color);
+            border-bottom-style: solid;
+        }
+ 
+        /* 访问量 */
+        .visit-counter {
+            position: absolute;
+            right: 30px;
+            bottom: 30px;
+            font-size: 0.9rem;
+            color: #7A8B7B;
+        }
+        
+        .book-cover.opened   {
+            transform: rotateY(-150deg);
+            pointer-events: none;
+        }
+ 
+        @media (max-width: 768px) {
+            .front-cover {
+                padding: 2.5rem;
+            }
+            
+            .author-portrait {
+                width: 220px;
+                height: 275px; /* 保持4:5比例 */
+            }
+            
+            .friend-links {
+                bottom: 25px;
+            }
+            
+            .visit-counter {
+                right: 25px;
+                bottom: 25px;
+            }
+        }
+ 
+        @media (max-width: 480px) {
+            .front-cover {
+                padding: 2rem 1rem;
+            }
+            
+            .author-portrait {
+                width: 180px;
+                height: 225px; /* 保持4:5比例 */
+            }
+            
+            .friend-links {
+                position: static;
+                margin-top: 1.5rem;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            
+            .visit-counter {
+                position: static;
+                text-align: center;
+                margin-top: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="book-cover" id="bookCover">
-        <!-- 翻书背面（动画时遮住翻转背面） -->
-        <div class="book-back"></div>
         <div class="front-cover">
-            <!-- 作者照片 -->
-            <div class="author-portrait"></div>
-
-            <!-- 进入文集按钮 -->
+            <!-- 修改为img标签（与简介页相同实现方式） -->
+            <img src="images/ckn.webp"  class="author-portrait" alt="三省轩主肖像">
+            
+            <!-- 进入按钮 -->
             <button class="open-book" onclick="navigateWithAnimation()">进入文集</button>
-
-            <!-- 友情链接区域（已清理空链接） -->
-            <div class="links-section">
-                <div class="links-title">⎯⎯ 友情链接 ⎯⎯</div>
-                <div class="friend-links-grid">
-                    <a href="https://dxzsby.pages.dev/index.html" target="_blank" style="color:#e74c3c;font-weight:bold;">增删卜易</a>
-                    <a href="https://sxxz.pages.dev/index.html" target="_blank">三省轩主文集</a>
-                    <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=Mzk0ODc1MzcxMg==&action=getalbum&album_id=4070727578921992197#wechat_redirect" target="_blank">道玄公众号</a>
-                    <a href="https://6948.kstore.space/app/index.html" target="_blank">道玄TV软件</a>
-                    <a href="https://www.gushiwen.org/" target="_blank">古诗文网</a>
-                    <a href="https://www.zhonghuashu.com/" target="_blank">中华文库</a>
-                </div>
+            
+            <!-- 友情链接 -->
+            <div class="friend-links">
+                <a href="https://dxwj.pages.dev/"   target="_blank">道玄文集</a>
+                <a href="https://www.gushiwen.org/"   target="_blank">古诗文网</a>
+                <a href="https://www.ruiwen.com/"   target="_blank">瑞文网</a>
+                <a href="https://www.zhonghuashu.com/"   target="_blank">中华书库</a>
+            </div>
+            
+            <!-- 访问量 -->
+            <div class="visit-counter">
+                今日访客: <span id="visitCount">0</span>
             </div>
         </div>
     </div>
-
+ 
     <script>
-        // 离线缓存（Service Worker）：成功打开一次后，网络卡顿/断网也能进入文集
-        if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-            navigator.serviceWorker.register('sw.js').catch(function(){});
+        // PWA支持 
+        if('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js?ver=1.0');   
         }
-
-        // 翻页动画导航
+        
+        // 翻页动画导航 
         function navigateWithAnimation() {
-            document.getElementById('bookCover').classList.add('opened');
+            document.getElementById('bookCover').classList.add('opened');  
             setTimeout(() => {
-                window.location.href = "index1.html";
+                window.location.href   = "index1.html";  
             }, 800);
         }
+        
+        // 访问计数 
+        (function() {
+            const today = new Date().toLocaleDateString();
+            const key = 'visit_' + today;
+            let count = localStorage.getItem(key)   || 0;
+            count = parseInt(count) + 1;
+            localStorage.setItem(key,   count);
+            document.getElementById('visitCount').textContent   = count;
+        })();
     </script>
 </body>
 </html>
