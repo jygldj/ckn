@@ -37,7 +37,8 @@
             const navContainer = document.getElementById('mainNav');
             navContainer.querySelectorAll('.volume-btn').forEach(btn => btn.remove());
 
-            const wechatLink = navContainer.querySelector('a[href*="wechat"]');
+            // 卷按钮插入到「扉页」之后、「全文搜索」之前（不再依赖已删除的微信公众号链接）
+            const anchor = navContainer.querySelector('a[href="search.html"]');
 
             for (let i = 1; i <= total; i++) {
                 const a = document.createElement('a');
@@ -49,7 +50,7 @@
                     e.preventDefault();
                     switchVolume(i);
                 };
-                navContainer.insertBefore(a, wechatLink);
+                navContainer.insertBefore(a, anchor);
             }
         }
 
