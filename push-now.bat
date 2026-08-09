@@ -1,10 +1,10 @@
 @echo off
 chcp 65001 >nul
 setlocal
-cd /d F:\github-dx\wx
+cd /d F:\github-dx\ckn
 
 echo ====================================
-echo   DaoXuan WenJi - Push to GitHub (jygldj/wx)
+echo   SanShengXuanZhu WenJi - Push to GitHub (jygldj/ckn)
 echo   推送后 Cloudflare Pages 自动部署
 echo ====================================
 echo.
@@ -18,7 +18,7 @@ git config http.sslverify true
 echo Git 配置已确认（schannel 后端，规避代理 SSL 问题）。
 echo.
 
-echo 正在推送到 https://github.com/jygldj/wx.git ...
+echo 正在推送到 https://github.com/jygldj/ckn.git ...
 echo.
 git add -A
 git commit -m "update: %date% %time%"
@@ -39,6 +39,6 @@ if %errorlevel% neq 0 (
 echo.
 echo ====================================
 echo   推送成功！Cloudflare 将在 1-2 分钟内自动部署。
-echo   访问：https://daoxuanwenji.pages.dev
+echo   访问：https://sxxz.pages.dev
 echo ====================================
 pause
