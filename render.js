@@ -1,5 +1,5 @@
 /*
- * 道玄文集 · 前端渲染器与阅读工具（render.js）
+ * 三省轩主文集 · 前端渲染器与阅读工具（render.js）
  * DXRender：把文章正文纯文本渲染为 HTML（段落、诗词、注释、标题、粗体、插图）
  * DXTheme ：夜间模式 / 字号调节 / 分享按钮，localStorage 记忆，全站生效
  * 本文件同时被 index1.html（阅读页）与 search.html（搜索页）引用。

@@ -1,5 +1,5 @@
 /*
- * 道玄文集 · Service Worker（sw.js）
+ * 三省轩主文集 · Service Worker（sw.js）
  * 作用：离线缓存与访问加速。
  *   - 首次成功打开后，页面骨架与文章数据全部存入本地缓存；
  *   - 页面与文章数据：网络优先 + 3 秒超时竞速——刷新即见新内容，
@@ -8,7 +8,7 @@
  *   - 后台检测到内容更新时，通知页面提示读者刷新。
  * 兼容性：不支持 Service Worker 的浏览器自动静默跳过，不影响正常访问。
  */
-var CACHE = 'dxwj-v4';   // ← 版本升至 v4，替换旧缓存（迁移到 Cloudflare Pages 后清掉旧 github.io 缓存）
+var CACHE = 'sxxz-v4';   // ← 版本升至 v4，替换旧缓存（迁移到 Cloudflare Pages 后清掉旧 github.io 缓存）
 var RACE_TIMEOUT = 3000;
 
 /* 预缓存清单：网站骨架与文章数据 */
@@ -39,11 +39,11 @@ self.addEventListener('install', function (e) {
 });
 
 self.addEventListener('activate', function (e) {
-    // 接管时清掉所有旧版本缓存（dxwj-v1/v2/v3 等）
+    // 接管时清掉所有旧版本缓存（sxxz-v1/v2/v3 等）
     e.waitUntil(
         caches.keys().then(function (keys) {
             return Promise.all(keys.map(function (k) {
-                if (k.indexOf('dxwj-') === 0 && k !== CACHE) {
+                if (k.indexOf('sxxz-') === 0 && k !== CACHE) {
                     return caches.delete(k);
                 }
             }));

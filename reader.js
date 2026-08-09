@@ -73,7 +73,7 @@
                 loadArticle(articles.indexOf(filtered[0]));
             } else {
                 document.getElementById('articleText').innerHTML = '<div class="loading">📭 该卷暂无文章</div>';
-                document.getElementById('articleTitle').textContent = '欢迎来到道玄文集';
+                document.getElementById('articleTitle').textContent = '欢迎来到三省轩主文集';
                 document.getElementById('articleMeta').innerHTML = '<span>请从左侧选择文章</span>';
             }
         }

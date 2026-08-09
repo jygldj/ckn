@@ -1,5 +1,5 @@
 /*
- * 道玄文集 · 构建核心（build-core.js）
+ * 三省轩主文集 · 构建核心（build-core.js）
  * 解析 articles 文件夹中的 .md 文件，生成结构化文章数据。
  * 同时被「更新工具 build.html」（浏览器）和一次性迁移脚本（Node.js）使用，
  * 保证两条路径产出的数据格式完全一致。本文件不含任何界面代码。
@@ -187,7 +187,7 @@
                 return { id: a.id, title: a.title, category: a.category, date: a.date, body: a.body };
             })
         };
-        return '// 道玄文集 · 文章数据（由更新工具自动生成，请勿手工编辑）\n' +
+        return '// 三省轩主文集 · 文章数据（由更新工具自动生成，请勿手工编辑）\n' +
                '// 生成时间：' + ts + '　共 ' + articles.length + ' 篇\n' +
                'const articlesData = ' + JSON.stringify(payload) + ';\n';
     }
