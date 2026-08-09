@@ -7,21 +7,18 @@
  *   - 样式/脚本/图片：缓存优先 + 后台静默更新，秒开省流量；
  * 兼容性：不支持 Service Worker 的浏览器自动静默跳过，不影响正常访问。
  */
-var CACHE = 'sxxz-v4';   // ← 版本升至 v4，替换旧缓存（迁移到 Cloudflare Pages 后清掉旧 github.io 缓存）
+var CACHE = 'sxxz-v5';   // ← 版本升至 v5：精简预缓存清单后清掉旧缓存（含已剔除的 build.html 等）
 var RACE_TIMEOUT = 3000;
 
-/* 预缓存清单：网站骨架与文章数据 */
+/* 预缓存清单：阅读所需的网站骨架与文章数据（不含编写工具 build.html/build-core.js/cover.css） */
 var CORE = [
     './',
     './index.html',
     './index1.html',
     './search.html',
     './jianjie.html',
-    './build.html',
     './style.css',
-    './cover.css',
     './render.js',
-    './build-core.js',
     './articles.js',
     './site-config.js',
     './reader.js'

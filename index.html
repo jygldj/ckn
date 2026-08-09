@@ -34,16 +34,18 @@
         
         body {
             font-family: "楷体", "STKaiti", serif;
-            background: var(--paper-color) fixed;
             color: var(--ink-color);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: url('https://img.zcool.cn/community/01f3fa5d18d473a801213f26e4776a.jpg@1280w_1l_2o_100sh.jpg');  
+            /* 纯 CSS 宣纸渐变，去除站外背景图依赖（zcool 返回 403 且移动端加载慢） */
+            background-color: var(--paper-color);
+            background-image:
+                radial-gradient(ellipse at 50% 36%, rgba(205,170,125,0.18) 0%, rgba(205,170,125,0) 60%),
+                linear-gradient(160deg, #f8f4e9 0%, #f1e7d2 55%, #e9dcc0 100%);
             background-size: cover;
-            background-attachment: fixed;
-            background-blend-mode: overlay;
+            background-attachment: scroll;
             background-repeat: no-repeat;
             background-position: center;
         }
@@ -213,9 +215,11 @@
     </div>
  
     <script>
-        // PWA支持 
+        // PWA支持：延迟到页面 load 后再注册，避免预缓存下载抢占首屏带宽
         if('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js'); 
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('sw.js'); 
+            });
         }
         
         // 翻页动画导航 
