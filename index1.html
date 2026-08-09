@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="description" content="道玄文集 - 古典诗词与散文杂记">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%235a3921'>📜</text></svg>">
+    <title>道玄文集</title>
+    <!-- 百度统计代码（异步加载，不阻塞页面渲染） -->
+    <script async src="https://hm.baidu.com/hm.js?35b5524e050763995511f80570ae121c"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <!-- 站点配置（SITE_BASE，须在 dict.js 之前加载） -->
+    <script src="site-config.js"></script>
+    <!-- 文章数据（结构化格式，兼容本地 file:// 协议） -->
+    <script src="articles.js"></script>
+    <!-- 正文渲染器 + 夜间模式/字号/分享工具 -->
+    <script src="render.js"></script>
+    <!-- 划词查字典（部署 Worker 后启用，见 dict-worker/ 说明） -->
+    <script src="dict.js" defer></script>
+</head>
+<body>
+    <!-- 左侧目录 -->
+    <aside class="sidebar">
+        <div class="author-link">
+            <a href="jianjie.html" class="author-copyright-link">
+                📝 关于作者版权
+            </a>
+        </div>
+
+        <h2>文章目录</h2>
+
+        <div class="filter-container">
+            <select class="filter-select" id="categoryFilter" onchange="filterArticles()">
+                <option value="" disabled selected>文章分类：全部</option>
+                <option value="all">全部</option>
+                <option value="诗">诗</option>
+                <option value="词">词</option>
+                <option value="散文">散文</option>
+                <option value="其它">其它</option>
+            </select>
+        </div>
+
+        <ul class="article-list" id="articleList">
+            <!-- 动态生成目录 -->
+            <li><div class="loading">📖 加载文章中稍等...</div></li>
+        </ul>
+    </aside>
+
+    <!-- 移动端侧边栏切换按钮 -->
+    <div class="sidebar-toggle" onclick="toggleSidebar()">
+        <span id="sidebar-icon">≡</span>
+    </div>
+
+    <!-- 右侧文章 -->
+    <main class="content" id="articleContent">
+        <header class="collection-header">
+            <h1 lang="zh">道玄文集</h1>
+
+            <!-- 页面导航（卷按钮将动态插入此处） -->
+            <nav class="page-navigation" id="mainNav">
+                <a href="index.html" class="page-link">扉页</a>
+                <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=Mzk0ODc1MzcxMg==&action=getalbum&album_id=4070727578921992197#wechat_redirect"  class="page-link">微信公众号</a>
+                <a href="search.html" class="page-link">全文搜索</a>
+                <a href="dict.html" class="page-link">新华字典</a>
+                <a href="build.html"  class="page-link">更新工具</a>
+            </nav>
+
+            <div role="search" class="search-bar">
+                <input type="search" id="searchInput" placeholder="输入关键词搜索..." aria-label="搜索文章">
+                <button onclick="searchArticles()">搜索</button>
+            </div>
+        </header>
+
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('catalog')">目录</button>
+            <button class="tab-btn" onclick="switchTab('article')">文章</button>
+        </div>
+
+        <div class="tab-content active" id="catalogTab">
+            <!-- 目录内容已在侧边栏显示 -->
+        </div>
+
+        <div class="tab-content" id="articleTab">
+            <nav class="article-nav">
+                <a href="#" id="prevArticle">← 上一篇</a>
+                <a href="#" id="nextArticle">下一篇 →</a>
+            </nav>
+
+            <article>
+                <h1 class="article-title" id="articleTitle">欢迎来到道玄文集</h1>
+                <div class="article-meta" id="articleMeta">
+                    <span>请从左侧选择文章</span>
+                </div>
+                <div class="article-content" id="articleText">
+                    <p>请等待加载...</p>
+                </div>
+            </article>
+
+            <nav class="article-nav">
+                <a href="#" id="prevArticleBottom">← 上一篇</a>
+                <a href="#" id="nextArticleBottom">下一篇 →</a>
+            </nav>
+        </div>
+    </main>
+
+    <!-- 悬浮导航 -->
+    <div class="article-float-nav">
+        <a href="#" id="mobilePrevArticle">← 上一篇</a>
+        <a href="#" id="mobileNextArticle">下一篇 →</a>
+    </div>
+
+    <script src="reader.js"></script>
+</body>
+</html>
