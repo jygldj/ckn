@@ -7,7 +7,7 @@
  *   - 样式/脚本/图片：缓存优先 + 后台静默更新，秒开省流量；
  * 兼容性：不支持 Service Worker 的浏览器自动静默跳过，不影响正常访问。
  */
-var CACHE = 'sxxz-v5';   // ← 版本升至 v5：精简预缓存清单后清掉旧缓存（含已剔除的 build.html 等）
+var CACHE = 'sxxz-v6';   // ← v6：install 预缓存容错（单资源缺失不阻断整版安装）+ skipWaiting 自愈（部署后下次访问即生效）
 var RACE_TIMEOUT = 3000;
 
 /* 预缓存清单：阅读所需的网站骨架与文章数据（不含编写工具 build.html/build-core.js/cover.css） */
@@ -27,15 +27,18 @@ var CORE = [
 self.addEventListener('install', function (e) {
     e.waitUntil(
         caches.open(CACHE).then(function (cache) {
-            // 加 ?v=4 绕过 CDN 边缘缓存强制拉新，但按【原始 URL】存盘：
+            // 加 ?v=6 绕过 CDN 边缘缓存强制拉新，但按【原始 URL】存盘：
             // 否则预缓存键带参、运行时请求无参，caches.match 永远对不上，离线首开失效。
+            // 容错：单个资源缺失（404 等）不阻断整版安装，保证将来删/改资源后新 SW 仍能装上。
             return Promise.all(CORE.map(function (u) {
-                return fetch(u + '?v=4').then(function (resp) {
-                    return cache.put(u, resp);
-                });
+                return fetch(u + '?v=6').then(function (resp) {
+                    if (resp && resp.ok) return cache.put(u, resp);
+                }).catch(function () { /* 单资源失败兜底，忽略 */ });
             }));
         })
     );
+    // 自愈：部署后下次访问即激活新版本，不必等所有旧页面关闭（否则旧实例会拦请求致 Failed to fetch）
+    self.skipWaiting();
 });
 
 self.addEventListener('activate', function (e) {

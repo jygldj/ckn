@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>三省轩主文集 · 后台</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%233A6351'>🖋️</text></svg>">
+<style>
+/* 配色与前台 style.css 对齐：宣纸底 / 茶墨字 / 竹青主色 / 青瓷侧栏 / 嫩荷悬停 */
+:root{
+  --paper:#FFFEFC;      /* 仿古宣纸色 */
+  --ink:#5A4A3F;        /* 茶墨色 */
+  --accent:#3A6351;     /* 竹青色 */
+  --accent-d:#2E5142;
+  --hover:#D1E0D7;      /* 嫩荷色 */
+  --cell:#E8F1F2;       /* 青瓷色 */
+  --line:#D1D9D9;       /* 青瓷冰裂纹 */
+  --line2:#C7D8D2;      /* 淡竹叶青 */
+  --muted:#7A8B7B;      /* 苔绿色 */
+  --ph:#A8A59B;         /* 占位灰 */
+  --card:#FFFFFF;
+  --err:#A8322D;
+  --warn:#8A6D1F;
+  --fs:16px;            /* 全站基准字号 */
+  --reader-fs:18px;     /* 阅读字号：夜间/字号工具条写入 documentElement，覆盖此默认值 */
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  font-family:"楷体","STKaiti","Microsoft YaHei",serif;
+  font-size:var(--reader-fs); color:var(--ink);
+  background:var(--paper);
+  line-height:1.7;
+}
+button{font-family:inherit;cursor:pointer;font-size:15px}
+input,textarea{font-family:inherit;color:var(--ink)}
+a{color:var(--accent)}
+
+header{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:14px 20px;border-bottom:1px solid var(--line);
+  background:rgba(255,254,252,.92);backdrop-filter:blur(4px);
+  position:sticky;top:0;z-index:20;
+}
+.btn{
+  border:1px solid var(--line2);background:var(--card);color:var(--ink);
+  padding:8px 16px;border-radius:4px;transition:.18s;
+}
+.btn:hover{background:var(--hover);border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-d);border-color:var(--accent-d);color:#fff}
+.btn.danger{border-color:#DCBEBE;color:var(--err);background:var(--card)}
+.btn.danger:hover{background:#FDF1F0;border-color:var(--err);color:var(--err)}
+.btn.small{padding:5px 12px;font-size:14px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn[disabled]:hover{background:var(--card);border-color:var(--line2);color:var(--ink)}
+
+main{display:flex;gap:0;height:calc(100vh - 63px);overflow:hidden}
+
+aside{
+  width:310px;flex:0 0 310px;border-right:1px solid var(--line);
+  display:flex;flex-direction:column;background:var(--cell);
+}
+aside .search{padding:12px}
+aside .search input{
+  width:100%;padding:9px 12px;border:1px solid var(--line2);border-radius:4px;
+  background:var(--card);font-size:var(--reader-fs);
+}
+#list{overflow-y:auto;flex:1;margin:0;padding:0 0 24px;list-style:none}
+#list li{
+  padding:11px 16px;border-bottom:1px solid rgba(58,99,81,.10);
+  cursor:pointer;font-size:var(--reader-fs);line-height:1.55;
+}
+#list li:hover{background:var(--hover)}
+#list li.active{background:var(--hover);border-left:4px solid var(--accent);padding-left:12px;color:var(--accent)}
+#list li .no{color:var(--muted);font-size:14px;margin-right:6px}
+#list li small{color:var(--muted);font-size:14px}
+#list li .dtitle{color:var(--warn)}                     /* 草稿标题以黄色显示 */
+#list li .draft{color:#6B5413;background:#F1E4B3;border:1px solid #D9BC55;border-radius:3px;padding:0 6px;margin-left:6px;font-size:12.5px}
+/* 草稿区分隔行（不可点） */
+#list li.grp{cursor:default;color:var(--warn);font-size:13px;letter-spacing:2px;
+  background:transparent;border-bottom:none;padding:12px 16px 4px;text-align:center}
+#list li.grp:hover{background:transparent}
+
+section.editor{flex:1;overflow-y:auto;padding:20px 26px 80px}
+
+/* 本机缓存提示条 */
+.localbar{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  border:1px solid #DCC98A;background:#FBF6E6;color:var(--warn);
+  border-radius:4px;padding:10px 14px;margin-bottom:16px;font-size:15px;
+}
+.localbar .sp{flex:1}
+
+.field{margin-bottom:16px}
+.field label{display:block;font-size:14.5px;color:var(--muted);margin-bottom:6px;letter-spacing:.5px}
+.field textarea{
+  width:100%;padding:10px 13px;border:1px solid var(--line2);border-radius:4px;
+  background:var(--card);font-size:var(--reader-fs);
+}
+.field textarea:focus{
+  outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(58,99,81,.10);
+}
+textarea#body{
+  min-height:52vh;line-height:1.95;font-size:var(--reader-fs);resize:vertical;
+  font-family:"楷体","STKaiti","Microsoft YaHei",serif;
+}
+
+/* 写作格式说明 */
+.fmt{
+  border:1px solid var(--line2);border-radius:4px;background:rgba(232,241,242,.55);
+  margin:0 0 16px;
+}
+.fmt summary{
+  cursor:pointer;padding:11px 14px;font-size:15.5px;color:var(--accent);
+  list-style:none;user-select:none;
+}
+.fmt summary::-webkit-details-marker{display:none}
+.fmt summary::before{content:"▸ ";color:var(--muted)}
+.fmt[open] summary::before{content:"▾ "}
+.fmt-body{padding:2px 16px 16px;font-size:15px;line-height:1.9}
+.fmt-body table{width:100%;border-collapse:collapse;margin:8px 0 12px}
+.fmt-body td{padding:6px 10px 6px 0;vertical-align:top;border-bottom:1px dashed rgba(58,99,81,.16)}
+.fmt-body td:first-child{width:230px;white-space:nowrap;color:var(--accent)}
+.fmt-body code{
+  font-family:Consolas,"Courier New",monospace;font-size:14.5px;
+  background:var(--card);border:1px solid var(--line2);border-radius:3px;padding:1px 6px;color:var(--ink);
+}
+.fmt-body pre{
+  font-family:Consolas,"Courier New",monospace;font-size:14.5px;line-height:1.8;
+  background:var(--card);border:1px solid var(--line2);border-radius:4px;
+  padding:12px 14px;margin:8px 0 0;overflow-x:auto;white-space:pre-wrap;color:var(--ink);
+}
+.fmt-note{color:var(--muted);margin:6px 0}
+
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0 8px}
+.toolbar .sp{flex:1}
+.toolbar .btn.danger{margin-left:28px}
+
+.meta{font-size:14px;color:var(--muted);margin:2px 0 14px}
+
+#login{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+  background:rgba(255,254,252,.97);z-index:50;
+}
+#login .box{
+  width:360px;background:var(--card);border:1px solid var(--line2);border-radius:8px;
+  padding:30px 28px;box-shadow:0 10px 40px rgba(58,99,81,.12);text-align:center;
+}
+#login h2{font-size:20px;font-weight:normal;margin:0 0 8px;color:var(--accent);letter-spacing:2px}
+#login p{font-size:14.5px;color:var(--muted);margin:0 0 18px}
+#login input{width:100%;padding:11px 14px;border:1px solid var(--line2);border-radius:4px;background:#fff;font-size:17px;margin-bottom:14px}
+#login .btn{width:100%;padding:11px}
+#toast{
+  position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);
+  background:rgba(58,99,81,.95);color:#fff;padding:11px 22px;border-radius:999px;
+  font-size:15.5px;opacity:0;transition:.25s;pointer-events:none;z-index:60;max-width:82vw;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.err{background:rgba(168,50,45,.96)}
+.empty{color:var(--muted);font-size:16px;padding:20px;line-height:2}
+
+@media(max-width:860px){
+  main{flex-direction:column;height:auto;overflow:visible}
+  aside{width:auto;flex:none;max-height:38vh;border-right:none;border-bottom:1px solid var(--line)}
+  section.editor{padding:16px}
+  textarea#body{min-height:40vh}
+  .fmt-body td:first-child{white-space:normal;width:auto}
+  .toolbar .btn.danger{margin-left:0}
+  header{padding:8px 12px;gap:8px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  header .btn{padding:6px 12px;font-size:13.5px}
+  .toolbar{gap:6px;margin:12px 0 6px}
+  .toolbar .btn{padding:6px 10px;font-size:13px}
+}
+
+/* 专注撰写模式：隐藏左侧列表与顶栏，编辑区占满视口（手机端由 newArticle/openArticle 自动进入） */
+body.focus aside{display:none}
+body.focus header{display:none}
+body.focus .focus-exit{display:flex}
+body.focus main{height:100vh;height:100dvh;overflow:hidden}
+body.focus section.editor{height:100vh;height:100dvh;padding:14px 16px;overflow-y:auto}
+body.focus textarea#body{min-height:60vh}
+.focus-exit{
+  display:none;                       /* 默认隐藏，仅专注模式经 body.focus 显现 */
+  position:fixed;top:12px;left:12px;z-index:130;
+  width:40px;height:40px;border-radius:50%;
+  align-items:center;justify-content:center;padding:0;line-height:1;
+  border:1px solid var(--line2);background:var(--card);color:var(--accent);
+  font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
+.focus-exit:hover{background:var(--hover)}
+@media(max-width:860px){
+  .focus-exit{width:36px;height:36px;font-size:16px;top:10px;left:10px}
+}
+
+/* ============================================================
+   后台页 · 阅读工具条 / 提示气泡 / 夜间模式（与阅读页共用 DXTheme）
+   ============================================================ */
+.dx-tools{
+  position:fixed;top:72px;right:16px;z-index:120;
+  display:flex;gap:6px;
+}
+.dx-tools button{
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--line2);background:var(--card);
+  cursor:pointer;font-size:15px;font-family:"楷体",serif;
+  color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.08);
+  transition:all .2s;display:flex;align-items:center;justify-content:center;
+  padding:0;line-height:1;
+}
+.dx-tools button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12);background:var(--hover)}
+@media(max-width:860px){
+  .dx-tools{top:auto;bottom:14px;right:12px;flex-direction:column}
+  .dx-tools button{width:36px;height:36px;font-size:13px}
+}
+.dx-toast{
+  position:fixed;left:50%;bottom:80px;transform:translateX(-50%) translateY(20px);
+  background:rgba(58,99,81,.95);color:#fff;padding:10px 22px;border-radius:24px;
+  font-size:15px;font-family:"楷体",serif;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s;z-index:300;max-width:80vw;text-align:center;
+}
+.dx-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* 夜间模式：覆盖主题变量，后台页整体随主题切换 */
+html.dark{
+  --paper:#1E1B18; --ink:#D8CFC2; --accent:#8FBCA9; --accent-d:#6A9B86;
+  --hover:#31433C; --cell:#26221F; --line:#3A3530; --line2:#4A5A52;
+  --muted:#8A9B8B; --ph:#7d7a70; --card:#2A2622; --err:#E07A74; --warn:#D8B85E;
+}
+html.dark #login{background:rgba(30,27,24,.97)}
+html.dark #login .box{background:var(--card);border-color:var(--line)}
+html.dark #login input{background:var(--paper);color:var(--ink);border-color:var(--line)}
+html.dark .btn{background:var(--card);color:var(--ink);border-color:var(--line2)}
+html.dark .btn:hover{background:var(--hover);border-color:var(--accent);color:var(--accent)}
+html.dark .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+html.dark .btn.primary:hover{background:var(--accent-d);border-color:var(--accent-d)}
+html.dark .btn.danger{border-color:#6b4a4a;color:var(--err)}
+html.dark .btn.danger:hover{background:#3a2626;border-color:var(--err)}
+html.dark .localbar{background:#3a3320;color:var(--warn);border-color:#5a4a2e}
+html.dark .fmt{background:rgba(42,38,34,.55)}
+html.dark .fmt summary{color:var(--accent)}
+html.dark .dx-tools button{background:rgba(42,38,34,.94);border-color:var(--line);color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.4)}
+html.dark .dx-toast{background:rgba(74,123,107,.97)}
+</style>
+<!-- 阅读工具（render.js）：提供夜间模式 / 字号调节，admin.html 与阅读页共用同一套 DXTheme -->
+<script src="render.js"></script>
+</head>
+<body>
+
+<header>
+  <a class="btn" href="index1.html" target="_blank" style="text-decoration:none">查看前台</a>
+  <button class="btn" id="btnNew">新建文章</button>
+  <button class="btn" id="btnImport">批量导入</button>
+      <button class="btn" id="btnExport" style="display:none">导出数据</button>
+      <button class="btn" id="btnLogout" style="display:none">退出登录</button>
+      <button class="btn" id="btnRefresh">↻ 刷新</button>
+</header>
+
+<main>
+  <aside>
+    <div class="search"><input id="q" type="search" placeholder="按标题 / 分类筛选…"></div>
+    <ul id="list"></ul>
+  </aside>
+
+  <section class="editor">
+    <!-- 本机缓存提示（有缓存且与当前内容不同时出现） -->
+    <div class="localbar" id="localbar" style="display:none">
+      <span id="localtext"></span>
+      <span class="sp"></span>
+      <button class="btn small" id="btnLocalLoad">载入缓存</button>
+      <button class="btn small" id="btnLocalDrop">丢弃</button>
+    </div>
+
+    <div id="form" style="display:none">
+      <div class="field">
+        <label>文稿</label>
+        <textarea id="body" spellcheck="false" placeholder="# 标题&#10;> 分类 | 日期&#10;&#10;正文……"></textarea>
+      </div>
+
+      <div class="toolbar">
+        <button class="btn" id="btnLocal">本地缓存</button>
+        <button class="btn" id="btnClear">清空</button>
+        <button class="btn" id="btnDraft">存为草稿</button>
+        <button class="btn primary" id="btnPublish">发布</button>
+        <button class="btn" id="btnSave">保存修改</button>
+        <span class="sp"></span>
+        <button class="btn danger" id="btnDelete">删除本文</button>
+      </div>
+
+      <!-- 写作格式说明：置于编辑区与发布按钮之下，默认收起；编辑已发布文章时整卡隐藏 -->
+      <details class="fmt" id="fmt">
+        <summary>写作格式</summary>
+        <div class="fmt-body">
+          <p class="fmt-note">文稿首行写标题、第二行写分类与日期，<b>保存时自动拆入数据库</b>，正文部分与前台所见一致。打开旧文时会自动带出这两行。</p>
+          <table>
+            <tr><td><code># 标题</code></td><td>首行，文章标题（必需）</td></tr>
+            <tr><td><code>&gt; 分类 | 日期</code></td><td>第二行，分类与日期；可只写其一，两样都无则删掉此行</td></tr>
+            <tr><td><code>空一行</code></td><td>分段。分类为「散文」等时，段首自动缩进两字；分类为「诗 / 词」时整篇不缩进</td></tr>
+            <tr><td><code>直接回车换行</code></td><td>同一段内换行（诗句逐行排版用这个，不要用空行）</td></tr>
+            <tr><td><code>## 小标题</code></td><td>二级小标题，独占一行</td></tr>
+            <tr><td><code>### 小标题</code></td><td>三级小标题，独占一行</td></tr>
+            <tr><td><code>《题名》</code></td><td>整行只有书名号包住的题名时，渲染为诗题样式</td></tr>
+            <tr><td><code>![说明](图)</code></td><td>插图，独占一行；方括号内文字显示为图注</td></tr>
+            <tr><td><code>**加粗**</code></td><td>加粗</td></tr>
+            <tr><td><code>注：……</code></td><td>以「注 / 注释 / 附 / 附记 / 附注」加冒号开头，其后的全部内容归入文末注释块</td></tr>
+          </table>
+          <p class="fmt-note">示例：</p>
+          <pre># 鹧鸪天·道明镇小馆记
+&gt; 诗 | 丙午年八月十八
+
+竹椅方桌申酉交，
+青椒腊肉釜中鏖。
+
+注：与友人六人游道明镇，见小馆夫妇五十载掌勺，
+感其情，作诗词一首以记。</pre>
+        </div>
+      </details>
+
+      <div class="meta" id="meta"></div>
+    </div>
+
+    <div class="empty" id="welcome">
+      左侧选择一篇文章进行编辑，或点右上角「新建文章」。<br><br>
+      文稿首行写「# 标题」，第二行写「&gt; 分类 | 日期」，其余为正文（点开编辑区下方的「写作格式」可看明细）。<br>
+      新建与草稿：输入两秒后自动缓存到本机浏览器，「存为草稿」「发布」直接写入数据库；<br>
+      已发布文章：只显示「保存修改」「删除本文」，改完即存，不做本机缓存。
+    </div>
+  </section>
+</main>
+
+<div id="login">
+  <div class="box">
+    <h2>三省轩主文集 · 后台</h2>
+    <p>请输入管理密码</p>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="管理密码">
+    <button class="btn primary" id="btnLogin">登录</button>
+    <p id="loginErr" style="color:#A8322D;margin:14px 0 0;min-height:20px"></p>
+  </div>
+</div>
+
+<div id="toast"></div>
+<button id="focusExit" class="focus-exit" type="button" title="返回列表" aria-label="返回列表">←</button>
+
+<script>
+(function () {
+  'use strict';
+
+  var currentAid = null;
+  var currentStatus = null;      /* 当前打开文章的状态（published / draft；新建为 null） */
+  var cache = [];
+  var LS_PREFIX = 'sxxz.local.';
+
+  function $(id) { return document.getElementById(id); }
+
+  function toast(msg, isErr) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.className = isErr ? 'show err' : 'show';
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { t.className = ''; }, 2800);
+  }
+
+  /* 专注撰写模式：手机端新建/打开文章时自动进入，隐藏列表与顶栏，编辑区占满屏；
+     退出仅由浮层返回钮触发，零布局占用。仅当视口窄（手机）时才进入。 */
+  var mqMobile = window.matchMedia('(max-width:860px)');
+  function enterFocus() { if (mqMobile.matches) document.body.classList.add('focus'); }
+  function exitFocus() {
+    document.body.classList.remove('focus');
+    $('form').style.display = 'none';
+    $('welcome').style.display = 'block';
+  }
+  $('focusExit').onclick = exitFocus;
+
+  function api(path, opts) {
+    opts = opts || {};
+    var init = { method: opts.method || 'GET', credentials: 'same-origin', headers: {} };
+    /* 所有写动作（POST/PUT/DELETE）一律带校验头，无请求体的 DELETE 也不例外 */
+    if (init.method !== 'GET') init.headers['X-DX-Admin'] = '1';
+    if (opts.body !== undefined) {
+      init.headers['Content-Type'] = 'application/json';
+      init.body = JSON.stringify(opts.body);
+    }
+    return fetch(path, init).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (!r.ok || j.ok === false) {
+          var err = new Error(j.error || ('HTTP ' + r.status));
+          err.status = r.status;
+          throw err;
+        }
+        return j;
+      });
+    });
+  }
+
+  /* ---------------- 文稿 ⇄ 字段 拆拼 ---------------- */
+
+  /** 文稿 → {title, category, date, body}。首行「# 标题」，次行「> 分类 | 日期」 */
+  function parseDoc(text) {
+    var lines = String(text).replace(/\r\n?/g, '\n').split('\n');
+    var title = '', category = '', date = '';
+    var i = 0;
+    while (i < lines.length && !lines[i].trim()) i++;
+    if (i < lines.length) {
+      title = lines[i].trim().replace(/^#{1,6}\s*/, '').trim();
+      i++;
+    }
+    for (; i < lines.length; i++) {
+      var t = lines[i].trim();
+      if (!t) continue;
+      if (/^>[^>]*$/.test(t)) {
+        var parts = t.replace(/^>\s*/, '').split('|');
+        category = (parts[0] || '').trim();
+        date = (parts[1] || '').trim();
+        i++;
+      }
+      break;
+    }
+    var body = lines.slice(i).join('\n').replace(/^\n+/, '').replace(/\s+$/, '');
+    return { title: title, category: category, date: date, body: body };
+  }
+
+  /** 文章记录 → 整篇文稿（标题/分类日期两行拼回文首） */
+  function docFromArticle(a) {
+    var head = '# ' + (a.title || '');
+    var meta = [(a.category || ''), (a.date || '')].filter(Boolean).join(' | ');
+    if (meta) head += '\n> ' + meta;
+    return head + '\n\n' + (a.body || '');
+  }
+
+  function skeleton() { return '# \n> 散文 | \n\n'; }
+
+  /* ---------------- 本机缓存（浏览器 localStorage） ---------------- */
+
+  function lsKey(aid) { return LS_PREFIX + (aid === null ? 'new' : aid); }
+
+  function lsGet(aid) {
+    try {
+      var raw = localStorage.getItem(lsKey(aid));
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+
+  function lsSet(aid, obj) {
+    try { localStorage.setItem(lsKey(aid), JSON.stringify(obj)); return true; }
+    catch (e) { return false; }
+  }
+
+  function lsDel(aid) {
+    try { localStorage.removeItem(lsKey(aid)); } catch (e) {}
+  }
+
+  function fmtTime(ts) {
+    var d = new Date(ts);
+    function p(n) { return n < 10 ? '0' + n : '' + n; }
+    return p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+
+  /** 写入本机缓存（仅新建/草稿；编辑已发布文章不缓存）。silent=true 不弹提示 */
+  function localCommit(aid, silent) {
+    if (currentAid !== null && currentStatus === 'published') return;   // 已发布编辑：不缓存
+    var ok = lsSet(aid, { text: $('body').value, at: Date.now() });
+    if (!ok && !silent) { toast('本机浏览器无法缓存（可能禁用了本地存储）', true); return; }
+    if (!silent) toast('已缓存到本机浏览器 · ' + fmtTime(Date.now()));
+    updateMeta();
+  }
+
+  /** 当前编辑内容与本机缓存比对，决定是否显示提示条（已发布编辑不显示） */
+  function refreshLocalBar() {
+    var bar = $('localbar');
+    if (currentAid !== null && currentStatus === 'published') { bar.style.display = 'none'; return; }
+    var snap = lsGet(currentAid);
+    if (!snap) { bar.style.display = 'none'; return; }
+    if (snap.text === $('body').value) { bar.style.display = 'none'; return; }
+    $('localtext').textContent = '本机浏览器存有一份缓存（' + fmtTime(snap.at) +
+      '，' + (snap.text || '').length + ' 字），与当前内容不同。';
+    bar.style.display = 'flex';
+  }
+
+  $('btnLocal').onclick = function () { localCommit(currentAid, false); refreshLocalBar(); };
+
+  $('btnLocalLoad').onclick = function () {
+    var snap = lsGet(currentAid);
+    if (!snap) { $('localbar').style.display = 'none'; return; }
+    $('body').value = snap.text || '';
+    $('localbar').style.display = 'none';
+    toast('已载入本机缓存（尚未入库）');
+  };
+
+  $('btnLocalDrop').onclick = function () {
+    lsDel(currentAid);
+    $('localbar').style.display = 'none';
+    toast('已丢弃本机缓存');
+  };
+
+  /* 自动缓存：停手 2 秒落盘；关页前强制落盘 */
+  var autoT = null;
+  $('body').addEventListener('input', function () {
+    updateMeta();
+    if (autoT) clearTimeout(autoT);
+    var aidAtType = currentAid;
+    autoT = setTimeout(function () { localCommit(aidAtType, true); }, 2000);
+  });
+  window.addEventListener('beforeunload', function () {
+    if ($('form').style.display !== 'none') localCommit(currentAid, true);
+  });
+
+  /* ---------------- 登录态 ---------------- */
+
+  function showLogin() {
+    $('login').style.display = 'flex';
+  }
+
+  function checkSession() {
+    return fetch('/api/session', { credentials: 'same-origin' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j && j.admin) { onLoggedIn(); }
+        else { showLogin(); }
+        return !!(j && j.admin);
+      })
+      .catch(function () { showLogin(); return false; });
+  }
+
+  function onLoggedIn() {
+    $('login').style.display = 'none';
+    $('btnLogout').style.display = 'inline-block';
+    $('btnExport').style.display = 'inline-block';
+    loadList();
+  }
+
+  $('btnLogin').onclick = function () {
+    var pw = $('pw').value;
+    if (!pw) return;
+    $('loginErr').textContent = '';
+    api('/api/login', { method: 'POST', body: { password: pw } })
+      .then(function () { $('pw').value = ''; onLoggedIn(); toast('登录成功'); })
+      .catch(function (e) { $('loginErr').textContent = e.message; });
+  };
+  $('pw').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('btnLogin').click(); });
+
+  $('btnLogout').onclick = function () {
+    api('/api/session', { method: 'POST' }).then(function () { location.reload(); });
+  };
+
+  $('btnRefresh').onclick = function () {
+    if (confirm('刷新将丢弃未保存的编辑，确定？')) location.reload();
+  };
+
+  /* ---------------- 列表（已发布在前，草稿居末、黄字） ---------------- */
+
+  function loadList() {
+    return api('/api/articles?all=1')
+      .then(function (j) {
+        cache = j.articles || [];
+        renderList();
+      })
+      .catch(function (e) { toast('读取列表失败：' + e.message, true); });
+  }
+
+  function renderList() {
+    var kw = ($('q').value || '').trim().toLowerCase();
+    var ul = $('list');
+    ul.innerHTML = '';
+    var pubs = [], drafts = [];
+    cache.forEach(function (a) {
+      if (a.status === 'draft') drafts.push(a); else pubs.push(a);
+    });
+    var n = 0;
+    function add(a, isDraft) {
+      if (kw && String(a.title).toLowerCase().indexOf(kw) < 0 &&
+          String(a.category).toLowerCase().indexOf(kw) < 0) return;
+      n++;
+      var li = document.createElement('li');
+      li.className = (currentAid && a.aid === currentAid) ? 'active' : '';
+      li.innerHTML = '<span class="no">' + a.id + '.</span>' +
+        '<span class="' + (isDraft ? 'dtitle' : '') + '">' + escapeHtml(a.title) + '</span>' +
+        ' <small>(' + escapeHtml(a.category) + ')</small>' +
+        (isDraft ? '<span class="draft">草稿</span>' : '');
+      li.onclick = function () { openArticle(a.aid); };
+      ul.appendChild(li);
+    }
+    pubs.forEach(function (a) { add(a, false); });
+    var dv = drafts.filter(function (a) {
+      return !kw || String(a.title).toLowerCase().indexOf(kw) >= 0 ||
+             String(a.category).toLowerCase().indexOf(kw) >= 0;
+    });
+    if (dv.length) {
+      var g = document.createElement('li');
+      g.className = 'grp';
+      g.textContent = '— 草稿 · ' + dv.length + ' 篇（前台不可见）—';
+      ul.appendChild(g);
+      dv.forEach(function (a) { add(a, true); });
+    }
+    if (!n) ul.innerHTML = '<div class="empty">没有匹配的文章</div>';
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  $('q').addEventListener('input', renderList);
+
+  /* ---------------- 编辑 ---------------- */
+
+  function updateMeta() {
+    var parts = [];
+    if (currentAid === null) {
+      /* 新建文章：省去冗余的「新建中（尚未入库）」与「本机缓存」提示，节约手机屏幕 */
+    } else {
+      parts.push('数据库主键 ' + currentAid);
+      parts.push(currentStatus === 'draft' ? '状态：草稿' : '状态：已发布');
+      if (updateMeta.updated) parts.push('更新于 ' + updateMeta.updated);
+    }
+    $('meta').textContent = parts.join(' · ');
+    $('meta').style.display = parts.length ? '' : 'none';
+  }
+
+  /** 按当前文章状态显隐按钮与格式卡（主公钦定规矩）：
+   *  新建        → 本地缓存 · 清空 · 存为草稿 · 发布
+   *  编辑已发布  → 保存修改 · 删除本文（无缓存、无清空、无格式卡）
+   *  编辑草稿    → 本地缓存 · 清空 · 存为草稿 · 发布 · 删除本文 */
+  function refreshToolbar() {
+    var isNew = !currentAid;
+    var isPub = !isNew && currentStatus === 'published';
+    $('btnSave').style.display    = isPub ? '' : 'none';
+    $('btnDraft').style.display   = (isNew || currentStatus === 'draft') ? '' : 'none';
+    $('btnPublish').style.display = (isNew || currentStatus === 'draft') ? '' : 'none';
+    $('btnDelete').style.display  = isNew ? 'none' : '';
+    $('btnLocal').style.display   = isPub ? 'none' : '';
+    $('btnClear').style.display   = isPub ? 'none' : '';
+    $('fmt').style.display        = isPub ? 'none' : '';
+  }
+
+  function openArticle(aid) {
+    api('/api/articles/' + aid)
+      .then(function (j) {
+        var a = j.article;
+        if (autoT) { clearTimeout(autoT); autoT = null; }
+        currentAid = a.aid;
+        currentStatus = a.status || 'published';
+        updateMeta.updated = a.updated_at || '';
+        $('form').style.display = 'block';
+        $('welcome').style.display = 'none';
+        $('body').value = docFromArticle(a);
+        $('localbar').style.display = 'none';
+        $('fmt').open = false;          // 格式说明始终默认收起
+        updateMeta();
+        refreshLocalBar();
+        refreshToolbar();
+        renderList();
+        enterFocus();
+      })
+      .catch(function (e) { toast('打开失败：' + e.message, true); });
+  }
+
+  function newArticle() {
+    if (autoT) { clearTimeout(autoT); autoT = null; }
+    currentAid = null;
+    currentStatus = null;
+    updateMeta.updated = '';
+    $('form').style.display = 'block';
+    $('welcome').style.display = 'none';
+    $('body').value = skeleton();
+    $('localbar').style.display = 'none';
+    $('fmt').open = false;            // 格式说明默认收起（点击随时展开）
+    updateMeta();
+    refreshLocalBar();
+    refreshToolbar();
+    renderList();
+    enterFocus();
+    $('body').focus();
+  }
+
+  $('btnNew').onclick = function () { newArticle(); };   /* 新建直接清空，不弹确认（草稿/新建内容有本机缓存兜底，可经「载入缓存」找回） */
+
+  /* 批量增量导入：先预览（dry）再确认入库；只新增、不覆盖后台文章，无需任何本机令牌 */
+  $('btnImport').onclick = function () {
+    if (busy) return;
+    $('btnImport').disabled = true;
+    api('/api/import-incremental?dry=1', { method: 'POST' })
+      .then(function (j) {
+        $('btnImport').disabled = false;
+        var n = (j.willAdd || []).length;
+        if (!n) {
+          toast('无需导入：静态 articles.js 的 ' + j.sourceCount + ' 篇已全在数据库中，后台文章未动');
+          return;
+        }
+        var list = j.willAdd.slice(0, 12).map(function (a) { return a.id + '. ' + a.title; }).join('\n');
+        if (n > 12) list += '\n…等共 ' + n + ' 篇';
+        if (confirm('将从静态 articles.js 增量导入 ' + n + ' 篇新文到数据库\n（只新增、不覆盖后台文章）：\n\n' + list + '\n\n确认导入？')) {
+          api('/api/import-incremental', { method: 'POST' })
+            .then(function (r) {
+              toast('已增量导入 ' + r.inserted + ' 篇（数据库由 ' + r.dbCountBefore + ' → ' + r.dbCountAfter + ' 篇）');
+              loadList();
+            })
+            .catch(function (e) { toast('导入失败：' + e.message, true); });
+        }
+      })
+      .catch(function (e) { $('btnImport').disabled = false; toast('预览失败：' + e.message, true); });
+  };
+
+  /* 全量导出：管理员把 D1 所有文章（含草稿）下载到本机，需登录；无需任何本机令牌 */
+  $('btnExport').onclick = function () {
+    if (busy) return;
+    if (!confirm('将把数据库全部文章（含草稿）导出为 JSON 文件下载到本机。\n确认导出？')) return;
+    $('btnExport').disabled = true;
+    fetch('/api/export', { credentials: 'same-origin' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (j) {
+        if (!j.ok) throw new Error(j.error || '导出失败');
+        var blob = new Blob([JSON.stringify(j)], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        var ts = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
+        a.download = 'sxxz-export-' + ts + '.json';
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+        toast('已导出并下载 ' + j.count + ' 篇（含草稿全量）');
+      })
+      .catch(function (e) { toast('导出失败：' + e.message, true); })
+      .then(function () { $('btnExport').disabled = false; });
+  };
+
+  $('btnClear').onclick = function () {
+    if ($('form').style.display === 'none') return;
+    if (!$('body').value.trim()) return;
+    newArticle();   /* 清空直接执行，不弹确认（本机缓存仍留有底稿，可经「载入缓存」找回） */
+    toast('已清空，等同新建');
+  };
+
+  /**
+   * 入库。mode：
+   *   'draft'   → 存为草稿（新建建档；编辑草稿时保持草稿）
+   *   'publish' → 发布（新建建档；草稿转正）
+   *   'keep'    → 保存修改（仅已发布文章，保持发布）
+   */
+  var busy = false;
+
+  function save(mode) {
+    if (busy) return;
+    var doc = parseDoc($('body').value);
+    if (!doc.title) { toast('文稿首行需写「# 标题」', true); return; }
+    if (!doc.body) { toast('正文不能为空', true); return; }
+
+    var status = mode === 'draft' ? 'draft'
+               : mode === 'publish' ? 'published'
+               : (currentStatus || 'published');
+
+    var p = { title: doc.title, category: doc.category || '其它', date: doc.date, status: status, body: doc.body };
+
+    var btn = mode === 'draft' ? $('btnDraft') : (mode === 'publish' ? $('btnPublish') : $('btnSave'));
+    var label = btn.textContent;
+    busy = true;
+    btn.disabled = true;
+    btn.textContent = '处理中…';
+
+    var req = currentAid
+      ? api('/api/articles/' + currentAid, { method: 'PUT', body: p })
+      : api('/api/articles', { method: 'POST', body: p });
+
+    req.then(function (j) {
+      busy = false;
+      btn.disabled = false;
+      btn.textContent = label;
+      if (!currentAid && j.article) { currentAid = j.article.aid; }
+      lsDel(currentAid);                       // 已入库，本机缓存使命完成
+      toast(mode === 'draft' ? '已存为草稿（前台不显示）' : (mode === 'publish' ? '已发布' : '已保存修改'));
+      exitFocus();                 /* 提交即退出专注，返回列表 */
+      return loadList();
+    }).catch(function (e) {
+      busy = false;
+      btn.disabled = false;
+      btn.textContent = label;
+      if (e.status === 401) { toast('会话已过期，请重新登录', true); $('login').style.display = 'flex'; }
+      else toast('保存失败：' + e.message, true);
+    });
+  }
+
+  $('btnDraft').onclick = function () { save('draft'); };
+  $('btnPublish').onclick = function () { save('publish'); };
+  $('btnSave').onclick = function () { save('keep'); };
+
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+      e.preventDefault();
+      if ($('form').style.display !== 'none') {
+        if (currentAid && currentStatus === 'published') save('keep');
+        else save('draft');
+      }
+    }
+  });
+
+  $('btnDelete').onclick = function () {
+    if (!currentAid) { toast('当前是未保存的新文章', true); return; }
+    var t = parseDoc($('body').value).title || '这篇文章';
+    if (!confirm('确定删除《' + t + '》？此操作不可撤销。')) return;
+    api('/api/articles/' + currentAid, { method: 'DELETE' })
+      .then(function () {
+        lsDel(currentAid);
+        toast('已删除');
+        currentAid = null;
+        currentStatus = null;
+        $('form').style.display = 'none';
+        $('localbar').style.display = 'none';
+        $('welcome').style.display = 'block';
+        exitFocus();
+        loadList();
+      })
+      .catch(function (e) { toast('删除失败：' + e.message, true); });
+  };
+
+  /* ---------------- 启动 ---------------- */
+
+  /* 注入阅读工具条：夜间模式 + 字号调节（与阅读页共用 DXTheme，后台页无需分享按钮） */
+  if (window.DXTheme) DXTheme.initTools({});
+
+  checkSession();
+})();
+</script>
+</body>
+</html>

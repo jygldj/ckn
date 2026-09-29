@@ -14,7 +14,7 @@
 ├── index1.html         阅读主页
 ├── jianjie.html        简介页
 ├── search.html         全文搜索页
-├── build.html          更新工具（浏览器端重新生成文章索引）
+├── admin.html          后台编辑页（登录后可新建/编辑/删除文章，数据存 D1）
 ├── dict.html           划词释义独立查询 / 演示页
 │
 ├── articles.js         文章索引数据（由构建工具自动生成，勿手改）
@@ -27,7 +27,7 @@
 ├── cover.css           封面样式（被 sw.js 预缓存）
 ├── sw.js               Service Worker（离线缓存，PWA）
 │
-├── articles/           191 篇 .md 文章源文件
+├── articles/           文章源文件（编号 001 起，含断号）
 │   ├── 001-初夏记事.md
 │   └── … （002 ~ 191）
 ├── images/
@@ -37,8 +37,7 @@
 │   └── api/
 │       └── dict.js     划词释义后端（Cloudflare Pages Function + KV）
 │
-├── push-now.bat        推送辅助脚本（⚠️ 当前仍指向 wx 仓库路径，ckn 使用需先改路径）
-└── 更新网站.bat        一键用 Edge 打开更新工具（build.html）
+└── （部署经 GitHub Desktop 提交，Cloudflare Git 集成自动部署）
 ```
 
 ### 页面文件
@@ -49,7 +48,7 @@
 | `index1.html` | 阅读主页。加载 `articles.js` 渲染文章列表与正文，提供分卷导航、主题切换、侧边栏、搜索框等，由 `reader.js` 驱动。 |
 | `jianjie.html` | 简介页。介绍作者"三省轩主"并显示肖像。 |
 | `search.html` | 全文搜索页。基于 `articles.js` 检索标题与正文，复用 `render.js` 渲染结果。 |
-| `build.html` | 更新工具。在浏览器中扫描 `articles/` 目录、调用 `build-core.js` 重新生成 `articles.js`，供新增 / 修改文章后刷新数据。 |
+| `admin.html` | 后台编辑页。登录（密码由环境变量 `ADMIN_PASSWORD_HASH` 校验）后可新建 / 编辑 / 删除文章，数据写入 D1，并支持批量导入、导出 JSON。 |
 | `dict.html` | 划词释义的独立查询与演示页。 |
 
 ### 脚本与配置
@@ -69,7 +68,7 @@
 
 | 路径 | 功能 |
 |------|------|
-| `articles/` | 191 篇 Markdown 文章源文件（编号 001~191），新增或修改文章后需用 `build.html` 重新生成索引。 |
+| `articles/` | 文章源文件（编号 001 起，含断号）；亦可用 `admin.html` 后台直接编辑，数据以 D1 为准。 |
 | `images/ckn.jpg` | 作者肖像，被 `index.html` 与 `jianjie.html` 引用。 |
 | `functions/api/dict.js` | 划词释义后端。Cloudflare Pages Function，从 KV 命名空间 `DICT_KV` 读取拼音与释义，按单字 / 成语 / 词语（首字分桶）查询，边缘缓存一天。 |
 
@@ -77,14 +76,14 @@
 
 | 文件 | 功能 |
 |------|------|
-| `更新网站.bat` | 一键用 Edge 打开 `build.html` 更新工具，生成索引后照常用 GitHub Desktop 提交。 |
-| `push-now.bat` | 一键推送脚本。已适配本仓库：路径 `F:\github-dx\ckn`、仓库 `jygldj/ckn`、站点 `https://sxxz.pages.dev`。 |
+| `admin.html` | 后台编辑入口（见上），经 Cloudflare Pages Functions 读写 D1。 |
+| 部署 | 经 GitHub Desktop 提交 `ckn` 仓库 → Cloudflare Git 集成（仓库 `jygldj/ckn`，分支 `main`）自动部署到 `https://sxxz.pages.dev`。 |
 
 ---
 
 ## 二、日常维护要点
 
-- **新增 / 修改文章**：在 `articles/` 放入或编辑 `.md` 文件 → 双击 `更新网站.bat` 打开更新工具 → 点"开始更新"生成 `articles.js` → 用 GitHub Desktop 提交推送，Cloudflare 自动部署。
+- **新增 / 修改文章**：方式一，登录 `admin.html` 后台直接编辑（写入 D1，前台实时反映）；方式二，本地编辑 `articles/` 下 `.md` 后由 GitHub Desktop 提交，Cloudflare 自动部署（静态 `articles.js` 为兜底快照）。
 - **文章格式**：首行 `# 标题`；其后 `> 分类｜日期`（`｜` 或 `|` 均可）；其余为正文，支持 `##`/`###` 标题、`**粗体**`、`![图](路径)` 等标记。
 - **划词释义**：后端依赖 Cloudflare Pages 项目绑定的 KV 命名空间 `DICT_KV`，绑定后需重新部署一次生效。
 - **线上未刷新 / 改动不生效（重要排查）**：绝大多数情况是「Cloudflare Pages → 设置 → Git 集成」中的 GitHub 连接被**断开**所致——连接断开后，无论怎么 push 都不会触发部署，线上会一直停在旧版本（表现：本地和 GitHub 文件都已改对，但 `dict.js` 文案、`index.html` 内容、照片等仍是旧的）。排查顺序：
