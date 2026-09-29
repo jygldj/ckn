@@ -1,7 +1,7 @@
 :root {
-    --paper-color: #E8F1F2;
-    --ink-color: #2E5E6E;
-    --accent-color: #3A7B8C;
+    --paper-color: #FFFEFC;      /* 宣纸（对齐全站） */
+    --ink-color: #5A4A3F;        /* 茶墨（对齐全站） */
+    --accent-color: #3A6351;     /* 竹青（对齐全站） */
     --shadow-color: rgba(0,0,0,0.1);
 }
 
@@ -24,9 +24,9 @@ body {
     align-items: center;
     /* 水墨渐变叠加层 */
     background-image:
-        radial-gradient(ellipse at 20% 30%, rgba(200, 220, 240, 0.5) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 70%, rgba(180, 200, 220, 0.4) 0%, transparent 45%),
-        linear-gradient(160deg, #E8F1F2 0%, #D5E3E8 40%, #C8D8E0 100%);
+        radial-gradient(ellipse at 20% 30%, rgba(210, 225, 215, 0.55) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(190, 215, 205, 0.45) 0%, transparent 45%),
+        linear-gradient(160deg, #FFFEFC 0%, #F2EFE6 40%, #E6E2D4 100%);
     background-size: cover;
     background-attachment: scroll;
     background-blend-mode: normal;
@@ -81,8 +81,8 @@ body {
 }
 
 .front-cover {
-    background: rgba(232, 241, 242, 0.95);
-    border: 1px solid #A3C4D2;
+    background: rgba(255, 254, 252, 0.96);
+    border: 1px solid #C7D8D2;
     box-shadow: 0 10px 25px var(--shadow-color);
     padding: 2rem;
     text-align: center;
@@ -101,7 +101,7 @@ body {
     width: 200px;
     height: 250px;
     margin: 0 auto 1.5rem;
-    background: url('ckn.jpg') center/cover;
+    background: url('images/ckn.jpg') center/cover;
     border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     clip-path: ellipse(45% 50% at 50% 50%);
@@ -153,7 +153,7 @@ body {
     color: var(--accent-color);
     text-decoration: none;
     padding: 0.5rem 0.3rem;
-    border-bottom: 1px dashed rgba(58, 123, 140, 0.4);
+    border-bottom: 1px dashed rgba(58, 99, 81, 0.4);
     transition: all 0.3s;
     font-size: 0.9rem;
 }
