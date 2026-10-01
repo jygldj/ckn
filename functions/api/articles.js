@@ -99,3 +99,27 @@ export async function onRequestPost(context) {
     return json({ ok: false, error: '写入失败：' + (e && e.message ? e.message : e) }, 500);
   }
 }
+
+export async function onRequestDelete(context) {
+  const denied = await guardWrite(context);
+  if (denied) return denied;
+
+  const { request, env } = context;
+  if (!env.DB) return json({ ok: false, error: '数据库未绑定' }, 500);
+
+  const url = new URL(request.url);
+  const aid = parseInt(url.searchParams.get('aid'), 10);
+  const id = parseInt(url.searchParams.get('id'), 10);
+  const key = aid || id;
+  if (!key || key < 1) return json({ ok: false, error: '请提供有效的 aid 或 id' }, 400);
+  const col = aid ? 'aid' : 'seq';
+
+  try {
+    const r = await env.DB.prepare(`DELETE FROM articles WHERE ${col} = ?`).bind(key).run();
+    const n = r && r.meta ? r.meta.changes : 0;
+    if (!n) return json({ ok: false, error: '文章不存在或未删除' }, 404);
+    return json({ ok: true, deleted: n, col, key });
+  } catch (e) {
+    return json({ ok: false, error: '删除失败：' + (e && e.message ? e.message : e) }, 500);
+  }
+}
