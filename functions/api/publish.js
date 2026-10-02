@@ -41,7 +41,7 @@ export async function onRequestPost(context) {
   const title = String(p.title || '').trim();
   const body = String(p.body || '');
   const category = String(p.category || '').trim() || '其它';
-  const date = String(p.date || '').trim();   // 由作者提供，不自动计算（道玄裁定·2026-10-02）
+  const date = String(p.date || '').trim();
   const status = p.status === 'draft' ? 'draft' : 'published';
 
   if (!title) return json({ ok: false, error: '标题不能为空' }, 400);
